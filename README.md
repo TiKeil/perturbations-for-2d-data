@@ -39,7 +39,7 @@ In this 'virtualenv', you have to install the required packages for python and e
 pip install numpy scipy cython scikit-sparse matplotlib notebook ipython ipdb ipyparallel
 ```
 
-If you are working on a mac, you need to use a kind of hacked version of scikit-sparse and do
+If you are working on a mac, you need to use a slightly hacked version of scikit-sparse and do
 
 ```
 brew install suite-sparse
