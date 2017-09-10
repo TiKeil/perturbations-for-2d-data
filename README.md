@@ -12,7 +12,7 @@ The entire coding is based on the python module 'gridlod'. This module has been 
 
 ## Setup
 
-First you need to select your favorite folder and clone the git repository that contains the 'gridlod' module. Furthermore, you switch to the compatible branch on which the extensions are established.
+First you need to open a terminal at your favorite folder and clone the git repository that contains the 'gridlod' module. Furthermore, you switch to the compatible branch on which the extensions are established.
 
 ```
 git clone https://github.com/TiKeil/gridlod.git
@@ -26,7 +26,7 @@ Now, add our repository with
 git clone https://github.com/TiKeil/Masterthesis-LOD.git
 ```
 
-In order to connect 'gridlod' to our new files, you need to work with a virtual environment. First, you construct this environment and then you activate it.
+In order to connect 'gridlod' with our new files, you need to work with a virtual environment. First, you construct this environment and then you activate it.
 
 ```
 virtualenv -p python2 venv2
@@ -79,10 +79,10 @@ We recommend to work with the jupyter-notebooks. They provide a good overview of
 
 Just copy the url into your favorite Browser, click on 'notebooks' and have a look at the prepared files. The interface enables a better insight to the, coding due to further explanations.
 
-Clearly, you can also run the complete python scripts in the folder 'virtualenv_files' if you do not want to use jupyter-notebooks. For example, you can do the following commands with activated 'virtualenv'
+Clearly, you can also run the complete python scripts in the folder 'python_files' if you do not want to use jupyter-notebooks. For example, you can do the following commands with activated 'virtualenv'
 
 ```
-cd virtualenv_files
+cd python_files
 cd generate_figures
 python 2.4.1_MsExampleFEM1d
 ```
