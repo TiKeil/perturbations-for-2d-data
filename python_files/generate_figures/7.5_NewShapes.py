@@ -35,6 +35,28 @@ N = New.flatten()
 plt.figure("newShape")
 drawCoefficient(NWorldFine, N)
 
+CoefClassNew1 = buildcoef2d.Coefficient2d(NWorldFine,
+                                         bg = bg, 
+                                         val = val, 
+                                         space = 2, 
+                                         probfactor=1, 
+                                         BoundarySpace = True)
+                                         
+newshape = np.array([[1,6,1,1,2,6,0,0,1], 
+                     [4,6,1,1,1,6,0,0,0], 
+                     [4,6,1,1,0,0,0,0,0],
+                     [1,6,1,-1,0,0,0,0,0]])
+
+CoefClassNew1.NewShape(newshape)
+New = CoefClassNew1.BuildCoefficient()
+
+N = New.flatten()
+
+plt.figure("newShape1")
+drawCoefficient(NWorldFine, N)
+
+plt.show()
+
 ############### shape6 #############
 CoefClassShape6 = buildcoef2d.Coefficient2d(NWorldFine,
                                          bg = bg, 
