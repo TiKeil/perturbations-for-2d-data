@@ -36,7 +36,8 @@ virtualenv -p python2 venv2
 In this 'virtualenv', you have to install the required packages for python and everything that remains to run 'gridlod' and our files. 
 
 ```
-pip install numpy scipy cython scikit-sparse matplotlib notebook ipython ipdb ipyparallel
+pip install numpy scipy cython 
+pip install matplotlib notebook ipython ipdb ipyparallel
 ```
 
 If you are working on a mac, you need to use a slightly hacked version of scikit-sparse and do
@@ -49,7 +50,7 @@ git checkout 0.2-homebrew
 python setup.py install
 ```
 
-On Linux, just install scikits.sparse
+On Linux just install scikits.sparse (suite-sparse is required)
 
 ```
 pip install scikits.sparse
