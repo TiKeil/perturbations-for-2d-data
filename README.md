@@ -50,13 +50,13 @@ git checkout 0.2-homebrew
 python setup.py install
 ```
 
-On Linux just install scikits.sparse (suite-sparse is required)
+On Linux just install scikits.sparse (suite-sparse is required).
 
 ```
 pip install scikits.sparse
 ```
 
-Now, link gridlod to our folder that enables to use it as a module.
+Now, link gridlod to our folder that enables to use it as a module (sudo required).
 
 ```
 echo $PWD > $(python -c 'from distutils.sysconfig import get_python_lib; print(get_python_lib())')/gridlod.pth
