@@ -60,7 +60,7 @@ Now, link gridlod to our folder that enables to use it as a module.
 
 ```
 echo $PWD > $(python -c 'from distutils.sysconfig import get_python_lib; print(get_python_lib())')/gridlod.pth
-echo $PWD/Master-thesis-LOD/ > $(python -c 'from distutils.sysconfig import get_python_lib; print(get_python_lib())')/Master-thesis-LOD.pth
+echo $PWD/Masterthesis-LOD/ > $(python -c 'from distutils.sysconfig import get_python_lib; print(get_python_lib())')/Masterthesis-LOD.pth
 ```
 
 ## Work
