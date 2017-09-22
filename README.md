@@ -85,5 +85,5 @@ Clearly, you can also run the complete python scripts in the folder 'python_file
 ```
 cd python_files
 cd generate_figures
-python 2.4.1_MsExampleFEM1d
+python 2.1-2.3_MsExampleFEM1d
 ```

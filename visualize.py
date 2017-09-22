@@ -31,6 +31,26 @@ def drawCoefficient(N, a, greys=False):
     plt.tick_params(axis='both', which='both', bottom='off', top='off', labelbottom='off', right='off', left='off', labelleft='off')
     plt.subplots_adjust(left=0.00,bottom=0.02,right=1,top=0.95,wspace=0.2,hspace=0.2)
 
+def drawCoefficientwt(N, a, greys=False):
+    '''
+    visualizing the 2d coefficient without a title
+    '''
+    aCube = a.reshape(N) 
+    plt.clf()
+    
+    if greys:
+        cmap = 'Greys'
+    else:
+        cmap = cm.plasma
+            
+    plt.imshow(aCube,
+               origin='upper', 
+               interpolation='none',
+               cmap=cmap)
+    plt.tick_params(axis='both', which='both', bottom='off', top='off', labelbottom='off', right='off', left='off', labelleft='off')
+    plt.subplots_adjust(left=0.00,bottom=0.02,right=1,top=0.98,wspace=0.2,hspace=0.2)
+
+
 def ExtradrawCoefficient(N, a, b, c ,d):
     aCube = a.reshape(N) 
     bCube = b.reshape(N) 
@@ -268,10 +288,11 @@ def plot_error_indicator(eps,recomputefractionsafe, NWorldCoarse,String):
     plt.title("Sorted error indicator for " + String)
     plt.ylabel('$e_{u}$',fontsize=20)
     plt.xlabel('Updated correctors in %',fontsize=20)
-    plt.subplots_adjust(left=0.14,bottom=0.14,right=0.99,top=0.95,wspace=0.2,hspace=0.2)
+    plt.subplots_adjust(left=0.15,bottom=0.14,right=0.99,top=0.95,wspace=0.2,hspace=0.2)
     plt.grid()
     plt.tick_params(axis='both', which='major', labelsize=17)
     plt.tick_params(axis='both', which='minor', labelsize=17)
+    #plt.savefig('pic/indi_'+ String + '.pdf')
     
 def plot_error_indicator_all(eps, recomputefractionsafe, NWorldCoarse, String):
     eps.sort()
@@ -287,10 +308,11 @@ def plot_error_indicator_all(eps, recomputefractionsafe, NWorldCoarse, String):
     plt.ylabel('$e_{u}$',fontsize=20)
     plt.xlabel('Updated correctors in %',fontsize=20)
     plt.legend(loc='upper right',fontsize=17)
-    plt.subplots_adjust(left=0.14,bottom=0.14,right=0.99,top=0.95,wspace=0.2,hspace=0.2)
+    plt.subplots_adjust(left=0.15,bottom=0.14,right=0.99,top=0.95,wspace=0.2,hspace=0.2)
     plt.grid()
     plt.tick_params(axis='both', which='major', labelsize=17)
     plt.tick_params(axis='both', which='minor', labelsize=17)
+    #plt.savefig('pic/compare_indi.pdf')
     
 def plot_VCLOD_error(errorbest,errorworst,errorplotinfo,recomputefractionsafe,String):
     size = np.size(recomputefractionsafe)
@@ -303,17 +325,17 @@ def plot_VCLOD_error(errorbest,errorworst,errorplotinfo,recomputefractionsafe,St
     for l in range(0,np.size(errorplotinfo)):
         errorplotinfo1.append(errorplotinfo[l]/errorbest[l])
     
-    plt.plot(recomputefractionsafe,errorplotinfo1, label = '$e_{vc}$')
+    plt.plot(recomputefractionsafe,errorplotinfo1)
     plt.title("Errors for " + String)
     ymin, ymax = plt.ylim()
-    plt.ylabel('Relative energy error',fontsize=20)
+    plt.ylabel('$e_{vc}$',fontsize=20)
     plt.xlabel('Updated correctors in %',fontsize=20)
-    plt.legend(loc='upper right',fontsize=17) #Legende
-    plt.subplots_adjust(left=0.14,bottom=0.14,right=0.99,top=0.95,wspace=0.2,hspace=0.2)
+    plt.subplots_adjust(left=0.15,bottom=0.14,right=0.99,top=0.95,wspace=0.2,hspace=0.2)
     plt.grid()
     plt.tick_params(axis='both', which='major', labelsize=17)
     plt.tick_params(axis='both', which='minor', labelsize=17)
-
+    #plt.savefig('pic/error_'+ String + '.pdf')
+    
 def plot_VCLOD_error_all(errorbest,errorworst,errorplotinfo,recomputefractionsafe, String):
     size = np.size(recomputefractionsafe)
     iden = []
@@ -332,8 +354,9 @@ def plot_VCLOD_error_all(errorbest,errorworst,errorplotinfo,recomputefractionsaf
     plt.legend(loc='upper right',fontsize=17)
     plt.tick_params(axis='both', which='major', labelsize=17)
     plt.tick_params(axis='both', which='minor', labelsize=17)
-    plt.subplots_adjust(left=0.14,bottom=0.14,right=0.99,top=0.95,wspace=0.2,hspace=0.2)
-    plt.ylabel('Relative energy error',fontsize=20)
+    plt.subplots_adjust(left=0.15,bottom=0.14,right=0.99,top=0.95,wspace=0.2,hspace=0.2)
+    plt.ylabel('$e_{vc}$',fontsize=20)
     plt.xlabel('Updated correctors in %',fontsize=20)
     plt.legend(loc='upper right',fontsize=17) 
     plt.grid()
+    #plt.savefig('pic/compare_errors.pdf')

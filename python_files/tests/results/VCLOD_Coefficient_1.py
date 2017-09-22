@@ -49,12 +49,12 @@ ufine = np.array([])
 ufine = np.append(ufine,finescale)
 
 plt.figure("Original")
-drawCoefficient(NWorldFine, Abase,greys=True)
-plt.title("Original coefficient")
+drawCoefficientwt(NWorldFine, Abase,greys=True)
+#plt.savefig('pic/Original.pdf')
 
 plt.figure("Solution")
-drawCoefficient(NWorldFine+1,ufine)
-plt.title("Solution")
+drawCoefficientwt(NWorldFine+1,ufine)
+#plt.savefig('pic/Solution.pdf')
 
 # Change in value
 C1Base, C1eps, C1errorbest, C1errorplotinfo, C1errorworst, C1vis, C1recomputefractionsafe = RegainChange(ROOT)
@@ -68,10 +68,8 @@ M1Base, M1eps, M1errorbest, M1errorplotinfo, M1errorworst, M1vis, M1recomputefra
 # Perturbation
 Er = np.array([])
 Er = np.append(Er,C1Base)
-plt.figure("Coefficient for Change in value")
-drawCoefficient(NWorldFine, Er,greys=True)
-plt.title("Coefficient for Change in value")
-plt.show()
+drawCoefficientwt(NWorldFine, Er,greys=True)
+#plt.savefig('pic/C.pdf')
 
 # Error indicator plot
 plot_error_indicator(C1eps,C1recomputefractionsafe, NWorldCoarse,'Change in value')
@@ -83,9 +81,8 @@ plot_VCLOD_error(C1errorbest, C1errorworst, C1errorplotinfo, C1recomputefraction
 Er = np.array([])
 Er = np.append(Er,VBase)
 plt.figure("Coefficient for Disappearance")
-drawCoefficient(NWorldFine, Er,greys=True)
-plt.title("Coefficient for Disappearance")
-plt.show()
+drawCoefficientwt(NWorldFine, Er,greys=True)
+#plt.savefig('pic/V.pdf')
 
 # Error indicator plot
 plot_error_indicator(Veps,Vrecomputefractionsafe, NWorldCoarse, 'Disappearance')
@@ -97,9 +94,8 @@ plot_VCLOD_error(Verrorbest, Verrorworst, Verrorplotinfo, Vrecomputefractionsafe
 Er = np.array([])
 Er = np.append(Er,M1Base)
 plt.figure("Coefficient for Shift")
-drawCoefficient(NWorldFine, Er,greys=True)
-plt.title("Coefficient for Shift")
-plt.show()
+drawCoefficientwt(NWorldFine, Er,greys=True)
+#plt.savefig('pic/S.pdf')
 
 # Error indicator plot
 plot_error_indicator(M1eps,M1recomputefractionsafe, NWorldCoarse, 'Shift')

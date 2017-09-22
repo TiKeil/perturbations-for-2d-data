@@ -124,9 +124,9 @@ A = CoefClass.SpecificVanish(Number=[0,2])
 B = CoefClass1.SpecificVanish(Number=[0,2])
 
 A1 = A.flatten()
-A2 = B.flatten()
-A3 = C.flatten()
-A4 = D.flatten()
+A4 = B.flatten()
+A2 = C.flatten()
+A3 = D.flatten()
 A5 = E.flatten()
 A6 = F.flatten()
 
