@@ -84,6 +84,9 @@ class VcPetrovGalerkinLOD:
         self.ecList = deepcopy(ecListOrigin)
         self.ecListtesting = deepcopy(ecListOrigin)
 
+    def CorrectorsToOrigin(self):
+        self.ecListtesting = self.ecListOrigin
+    
     def originRhsCorrectors(self, clearFineQuantities=True):
         '''
         todo update to ecworkers
@@ -238,7 +241,8 @@ class VcPetrovGalerkinLOD:
             print 'Waiting for results', len(ecComputeList)
         
         if self.printLevel > 0 or Testing:
-            print "To be recomputed: ", float(recomputeCount)/NtCoarse*100, '%'
+            if mc == 0:
+                print "To be recomputed: ", float(recomputeCount)/NtCoarse*100, '%'
         
         self.printLevel = 0
 
