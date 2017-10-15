@@ -38,18 +38,20 @@ uSol = uSol/4
 #plot1
 plt.figure('Coefficient')
 plt.plot(xt,aFine, label='$A_{\epsilon}(x)$')
-plt.yticks((0,np.max(aFine)+np.min(aFine)),fontsize="small")
-plt.ylabel('$y$', fontsize="small")
-plt.xlabel('$x$', fontsize="small")
-plt.legend(frameon=False,fontsize="large")
+plt.yticks((0,np.max(aFine)+np.min(aFine)),fontsize=16)
+plt.xticks(fontsize=16)
+plt.ylabel('$y$', fontsize=16)
+plt.xlabel('$x$', fontsize=16)
+plt.legend(frameon=False,fontsize=16)
 
 #plot2
 plt.figure('Coefficient1')
 plt.plot(xt,aFine1, label='$A_{\epsilon}(x)$')
-plt.yticks((0,np.max(aFine)+np.min(aFine1)),fontsize="small")
-plt.ylabel('$y$', fontsize="small")
-plt.xlabel('$x$', fontsize="small")
-plt.legend(frameon=False,fontsize="large")
+plt.yticks((0,np.max(aFine)+np.min(aFine1)),fontsize=16)
+plt.xticks(fontsize=16)
+plt.ylabel('$y$', fontsize=16)
+plt.xlabel('$x$', fontsize=16)
+plt.legend(frameon=False,fontsize=16)
 
 newErrorFine = []
 x = []

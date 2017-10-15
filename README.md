@@ -43,11 +43,12 @@ pip install matplotlib notebook ipython ipdb ipyparallel
 If you are working on a mac, you need to use a slightly hacked version of scikit-sparse and do
 
 ```
-brew install suite-sparse
+brew install suite-sparse    <-- with deactivated virtualenv 
 git clone https://github.com/TiKeil/scikit-sparse.git
 cd scikit-sparse/
 git checkout 0.2-homebrew
 python setup.py install
+pip install scikit-sparse
 ```
 
 On Linux just install scikit-sparse (suite-sparse is required).
