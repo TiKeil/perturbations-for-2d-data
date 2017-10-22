@@ -8,7 +8,7 @@
 ```
 
 This repository contains the python coding that belongs to the master thesis "Variational crimes in the Localized orthogonal decomposition method" by Tim Keil. Furthermore, it presents the generation of each python figure that is included in the thesis. If you intend to try the tests and the generation of the figures by yourself you need to follow the setup steps that are explained in the next section. After the setup, you can either run the jupyter-notebooks or run the complete python scripts by yourself. Both strategies allow for adjusting the test to own purposes such as different coefficients or perturbations.
-The entire coding is based on the python module 'gridlod'. This module has been used and developed by Axel Målqvist and Fredrik Hellmann. Our repository provides further classes, that work as an extension of 'gridlod' and enable an efficient construction of two dimensional coefficients. 
+The entire coding is based on the python module 'gridlod'. This module has been used and developed by Fredrik Hellman and Axel Målqvist on https://github.com/fredrikhellman/gridlod. Our repository provides further classes, that work as an extension of 'gridlod' and enable an efficient construction of two dimensional coefficients. 
 
 ## Setup
 
