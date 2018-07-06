@@ -9,6 +9,7 @@ from copy import deepcopy
 import scipy.sparse as sparse
 
 from gridlod import lod, util, fem, ecworker, eccontroller
+import timeit
 
 class VcPetrovGalerkinLOD:
     def __init__(self, origincoef, world, k, IPatchGenerator, printLevel=0):
@@ -63,7 +64,7 @@ class VcPetrovGalerkinLOD:
             print 'Done'
         
         #element corrector list has coarse element size 
-        ecListOrigin = self.ecListOrigin     
+        ecListOrigin = self.ecListOrigin
         ecComputeList = []
                 
         for TInd in range(NtCoarse):
@@ -141,12 +142,13 @@ class VcPetrovGalerkinLOD:
         self.rhsCList = deepcopy(rhsCListOrigin)
 
             
-    def updateCorrectors(self, coefficient, epsilonTol, f, epsilonQuestion =0, clearFineQuantities=True, Testing = None, Computing= True,mc=0):
+    def updateCorrectors(self, coefficient, epsilonTol, f, epsilonQuestion =0, clearFineQuantities=True, Testing = None, Computing= True, mc=0, new_correctors = False, runtime=False):
         assert(self.ecListOrigin is not None)
-        
         if epsilonTol == 0 and Computing == True and mc==0:
             self.printLevel = 2
-            
+
+        start = timeit.default_timer()
+
         world = self.world
         k = self.k
         IPatchGenerator = self.IPatchGenerator
@@ -165,15 +167,18 @@ class VcPetrovGalerkinLOD:
         
         if self.epsilonList == None:
             self.epsilonList = [np.nan]*NtCoarse
-        
-        #element corrector list has coarse element size 
+
+        #element corrector list has coarse element size
         if Testing:
             ecListOrigin = self.ecListtesting
         else:
             ecListOrigin = self.ecListOrigin
-        
+
         ecList = deepcopy(ecListOrigin)
-        
+
+        if new_correctors:
+            ecListOrigin = self.ecList
+
         if self.printLevel >= 2:
             print 'Setting up workers'
         eccontroller.setupWorker(world, coefficient, IPatchGenerator, k, clearFineQuantities, self.printLevel)
@@ -236,7 +241,9 @@ class VcPetrovGalerkinLOD:
             else:
                 if self.printLevel > 1:
                     print 'N'    
-        
+
+        time_to_compute = timeit.default_timer() - start
+
         if self.printLevel >= 2:
             print 'Waiting for results', len(ecComputeList)
         
@@ -251,9 +258,11 @@ class VcPetrovGalerkinLOD:
             for ecResult, ecCompute in zip(ecResultList, ecComputeList):
                 ecList[ecCompute[0]] = ecResult
         else:
-            print "Not Recomputed!"
+            if self.printLevel >= 1:
+                print "Not Recomputed!"
                 
-        self.ecList = ecList
+        if Computing:
+            self.ecList = ecList
         
         if epsilonTol != 0:
             self.ecListtesting = ecList
@@ -265,8 +274,11 @@ class VcPetrovGalerkinLOD:
         ageListinv = ageListinv - ageList
         
         if epsilonQuestion == 0:
-            return ageListinv
-        
+            if runtime:
+                return ageListinv, time_to_compute
+            else:
+                return ageListinv
+
         if epsilonQuestion == 1:
             return ageListinv, epsilonList
 
