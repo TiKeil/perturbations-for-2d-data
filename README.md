@@ -21,9 +21,12 @@ git checkout masterthesis
 cd ..
 ```
 
-Now, add our repository with
+Now, add our repository and checkout the correct branch with
 ``` 
 git clone https://github.com/TiKeil/Masterthesis-LOD.git
+cd Masterthesis-LOD
+git checkout master_thesis
+cd ..
 ```
 
 In order to connect 'gridlod' with our new files, you need to work with a virtual environment. First, you construct this environment and then you activate it.
