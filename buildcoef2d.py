@@ -1061,7 +1061,8 @@ class Coefficient2d:
                     ChangeDiagl1=1, 
                     ChangeDiagl2=1,
                     Original = True,
-                    NewShapeChange=True):
+                    NewShapeChange=True,
+                    RandomSeed=None):
         #Changes Value randomly or certainly
         '''
         Ratio = amount of defect :    0.1 = 10 %  of the reference value 
@@ -1069,6 +1070,10 @@ class Coefficient2d:
         randomvalue = if true then a intervall of ratios is required
         negative = if true also negative defects are allowed
         '''
+
+        if RandomSeed is not None:
+            random.seed(RandomSeed)
+
         #remember stuff
         assert(self.ShapeRemember is not None)
         assert(self.RandomMatrix is not None)
@@ -1184,8 +1189,11 @@ class Coefficient2d:
                     ChangeDiagl1=1, 
                     ChangeDiagl2=1,
                     Original = True,
-                    NewShapeChange=True):
-                    
+                    NewShapeChange=True,
+                    RandomSeed=None):
+
+        if RandomSeed is not None:
+            random.seed(RandomSeed)
         #remember stuff
         assert(self.ShapeRememberOriginal is not None)
         assert(self.RandomMatrix is not None)
@@ -1898,13 +1906,18 @@ class Coefficient2d:
                     TopLeft=0,
                     Top=0,
                     TopRight=0,
+                    AllDirections = False,
                     Original = True,
-                    NewShapeChange = True):
+                    NewShapeChange = True,
+                    RandomSeed = None):
 
         #remember stuff
         assert(self.ShapeRememberOriginal is not None)
         assert(self.RandomMatrix is not None)
-        
+
+        if RandomSeed is not None:
+            random.seed(RandomSeed)
+
         NWorldFine = self.NWorldFine
         val = self.val
         bg = self.bg
@@ -1918,7 +1931,7 @@ class Coefficient2d:
         
         C = np.zeros(NWorldFine)
         C += bg
-        
+
         #probability
         decision = np.zeros(probfactor)     
         decision[0] = 1
@@ -1933,6 +1946,8 @@ class Coefficient2d:
             stepList = randomstep
         
         MoveList = [Right*1,BottomRight*2,Bottom*3,BottomLeft*4,Left*5,TopLeft*6,Top*7,TopRight*8]
+        if AllDirections:
+            MoveList = [r for r in range(1,9)]
         MoveList = list(filter(lambda x: x!=0 ,MoveList))
         
         #for remember
