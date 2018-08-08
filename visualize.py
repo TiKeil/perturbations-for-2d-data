@@ -371,7 +371,7 @@ def plot_VCLOD_error_all(errorbest,errorworst,errorplotinfo,recomputefractionsaf
     plt.tick_params(axis='both', which='major', labelsize=17)
     plt.tick_params(axis='both', which='minor', labelsize=17)
     plt.subplots_adjust(left=0.15,bottom=0.14,right=0.99,top=0.95,wspace=0.2,hspace=0.2)
-    plt.ylabel('$e_{vc}$',fontsize=20)
+    plt.ylabel('$e_{vc}/e_{pert}$',fontsize=20)
     plt.xlabel('Updated correctors in %',fontsize=20)
     plt.legend(loc='upper right',fontsize=17) 
     plt.grid()
