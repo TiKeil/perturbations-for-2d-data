@@ -89,8 +89,10 @@ plot_VCLOD_error(Verrorbest, Verrorworst, Verrorplotinfo, Vrecomputefractionsafe
 runtime.append(runtime[256])
 plt.figure('Runtime')
 plt.plot(Vrecomputefractionsafe,runtime)
-plt.title("Runtime of updating process")
-plt.ylabel('runtime in sec', fontsize=14)
-plt.xlabel('Updated correctors in %', fontsize=14)
+plt.ylabel('runtime in sec', fontsize=20)
+plt.grid(True)
+plt.xlabel('Updated correctors in %', fontsize=20)
+plt.subplots_adjust(left=0.15,bottom=0.14,right=0.99,top=0.95,wspace=0.2,hspace=0.2)
+plt.tick_params(axis='both', which='major', labelsize=17)
 
 plt.show()
