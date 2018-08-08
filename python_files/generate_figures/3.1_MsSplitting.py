@@ -107,7 +107,7 @@ diff = basis*uLodCoarse-uLodFine
 # plot multiscale splitting
 d3plotter(NWorldFine, uFineFem,boundary=[np.min(uFineFem),np.max(uFineFem)])
 d3plotter(NWorldCoarse, uLodCoarse, String='Coarse1', boundary=[np.min(uFineFem),np.max(uFineFem)])
-d3plotter(NWorldFine, diff, String='uf2',boundary=[np.min(uFineFem),np.max(uFineFem)], Blues= True)
+d3plotter(NWorldFine, diff, String='uf2',boundary=[np.min(uFineFem),np.max(uFineFem)])
 
 # plot for basis functions
 schauen = np.zeros(NpCoarse)
@@ -117,8 +117,8 @@ schau1 = basisCorrectors*schauen
 schau2 = modifiedBasis*schauen
 zmax = np.max(schau2)
 zmin = np.min(schau2)
-d3plotter(NWorldFine, schau, '1', zmax=zmax, zmin=zmin, Blues=True)
-d3plotter(NWorldFine, schau1, '2', zmax=zmax, zmin=zmin, Blues=True)
+d3plotter(NWorldFine, schau, '1', zmax=zmax, zmin=zmin)
+d3plotter(NWorldFine, schau1, '2', zmax=zmax, zmin=zmin)
 d3plotter(NWorldFine, schau2, '3', zmax=zmax, zmin=zmin)
 
 plt.show()
