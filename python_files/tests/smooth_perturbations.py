@@ -37,12 +37,26 @@ aFine = np.ones(fine)
 aFine /= 10
 aPert = np.copy(aFine)
 
+# for i in range(int(fine/4.)-1,int(fine*3/4.)-1,100):
+#     for j in range(10):
+#         aFine[int(i+j)] = 1
+
 for i in range(int(fine/2.)-1,int(fine*3/4.)-1):
     aFine[i] = 1
-    
+
 # aPert is the perturbed coefficient
-for i in range(int(fine*3/4.)-1,int(fine*0.9375)-1):
-    aPert[i] = 1
+# this is the old strategy use the new one with index search
+# for i in range(int(fine*3/4.)-1,int(fine*0.9375)-1):
+#     aPert[i] = 1
+
+xpCoarse = util.pCoordinates(NFine).flatten()
+a_transformed = np.copy(aFine)
+for k in range(0,np.shape(xpCoarse)[0]-1):
+    transformed_x = 1 - np.sqrt(1-xpCoarse[k])  # this should be the correcto direction
+    # print('point {} has been transformed to {} and the new index is {}'.format(xpCoarse[k],transformed_x,index_search(transformed_x, xpCoarse)-1))
+    a_transformed[k] = aFine[index_search(transformed_x, xpCoarse)-1]
+
+aPert = a_transformed
 
 # this is the mesh size
 delta_h = 1./fine
@@ -220,7 +234,7 @@ for N in NList:
     NpCoarse = np.prod(NWorldCoarse + 1)
     plt.figure('error')
     error = exact_problem[i]-transformed_problem[i]
-    # plt.plot(xpCoarse, error, label=str(N))
+    plt.plot(xpCoarse, error, label=str(N))
     plt.legend(frameon=False, fontsize="small")
     i += 1
 
