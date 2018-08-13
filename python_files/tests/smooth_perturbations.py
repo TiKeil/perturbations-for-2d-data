@@ -23,7 +23,7 @@ fine = 4096
 NFine = np.array([fine])
 NpFine = np.prod(NFine + 1)
 # list of coarse meshes
-NList = [32, 64, 128, 256, 512, 1024, 2048, 4096]
+NList = [2, 4, 8, 16 ,32, 64, 128, 256]
 
 # construction of the coefficients. 
 # The plot is ecactly what we want and the perturbation is
