@@ -17,7 +17,7 @@ First you need to open a terminal at your favorite folder and clone the git repo
 ```
 git clone https://github.com/TiKeil/gridlod.git
 cd gridlod
-git checkout masterthesis
+git checkout thesis
 cd ..
 ```
 
