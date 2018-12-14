@@ -58,7 +58,7 @@ x = []
 y = []
 for N in NList:
     NWorldCoarse = np.array([N,N])
-    print "N "+ str(N)
+    print(("N "+ str(N)))
     NCoarseElement = NWorldFine/NWorldCoarse
     world = World(NWorldCoarse, NCoarseElement, boundaryConditions)
     AFine = fem.assemblePatchMatrix(NWorldFine, world.ALocFine, ABase)

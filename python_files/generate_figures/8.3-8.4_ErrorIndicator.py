@@ -16,7 +16,7 @@ import buildcoef2d
 from visualize import drawCoefficient
 
 def result(pglod, world, A, R, f, k, String):
-    print "------------------------------------- " + String + " -------------------------------------------" 
+    print(("------------------------------------- " + String + " -------------------------------------------")) 
     NWorldFine = world.NWorldFine
     NWorldCoarse = world.NWorldCoarse
     NCoarseElement = world.NCoarseElement

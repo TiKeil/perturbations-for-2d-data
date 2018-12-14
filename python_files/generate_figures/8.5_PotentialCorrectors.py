@@ -102,7 +102,7 @@ IPatchGenerator = lambda i, N: interp.L2ProjectionPatchMatrix(i, N, NWorldCoarse
 Aold = coef.coefficientFine(NWorldCoarse, NCoarseElement, ABase)
 
 for k in range(1,6):
-    print '<<<<<<<<<<<<<<<< ' + str(k) + ' >>>>>>>>>>>>>>>>'
+    print(('<<<<<<<<<<<<<<<< ' + str(k) + ' >>>>>>>>>>>>>>>>'))
     pglod = pg_rand.VcPetrovGalerkinLOD(Aold, world, k, IPatchGenerator, 1)
     pglod.originCorrectors(clearFineQuantities=False)
     

@@ -343,5 +343,5 @@ plt.legend()
 plt.show()
 
 for i in range(0,np.size(printer)):
-    print str(printer[i]) + ' +- ' + str(printer3[i]) 
-    print str(printer2[i]) + ' +- ' + str(printer4[i])
+    print((str(printer[i]) + ' +- ' + str(printer3[i]))) 
+    print((str(printer2[i]) + ' +- ' + str(printer4[i])))
