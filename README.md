@@ -2,7 +2,7 @@
 
 ```
 # This file is part of the master thesis "Variational crimes in the Localized orthogonal decomposition method":
-#   https://github.com/TiKeil/Masterthesis-LOD.git
+#   https://github.com/TiKeil/MasterthesisLOD.git
 # Copyright holder: Tim Keil 
 # License: BSD 2-Clause License (http://opensource.org/licenses/BSD-2-Clause)
 ```
@@ -23,8 +23,8 @@ cd ..
 
 Now, add our repository and checkout the correct branch with
 ``` 
-git clone https://github.com/TiKeil/Masterthesis-LOD.git
-cd Masterthesis-LOD
+git clone https://github.com/TiKeil/MasterthesisLOD.git
+cd MasterthesisLOD
 git checkout master_thesis
 cd ..
 ```
@@ -64,7 +64,7 @@ Now, link gridlod to our folder that enables to use it as a module (sudo require
 
 ```
 echo $PWD > $(python -c 'from distutils.sysconfig import get_python_lib; print(get_python_lib())')/gridlod.pth
-echo $PWD/Masterthesis-LOD/ > $(python -c 'from distutils.sysconfig import get_python_lib; print(get_python_lib())')/Masterthesis-LOD.pth
+echo $PWD/MasterthesisLOD/ > $(python -c 'from distutils.sysconfig import get_python_lib; print(get_python_lib())')/MasterthesisLOD.pth
 ```
 
 ## Work
@@ -73,7 +73,7 @@ Every time you want to work with the virtualenv, you simply need to run
 
 ```
 . venv2/bin/activate
-cd Masterthesis-LOD
+cd MasterthesisLOD
 ```
 
 We recommend to work with the jupyter-notebooks. They provide a good overview of the content and simplify manual changes.  
