@@ -133,8 +133,8 @@ def d3sol(N, s, String='FinescaleSolution'):
     ax.set_xlabel('$x$')
     ax.set_ylabel('$y$')
     ax.zaxis.set_major_locator(LinearLocator(10))
-    ax.axis(False)
-    
+    ax.axis('off')
+
     # Add a color bar which maps values to colors.
     fig.colorbar(surf, shrink=0.5, aspect=5)
     
@@ -161,7 +161,7 @@ def d3solextra(N, s, fig, ax, ymin, ymax):
     ax.set_xlabel('$x$')
     ax.set_ylabel('$y$')
     ax.zaxis.set_major_locator(LinearLocator(10))
-    ax.axis(False)
+    ax.axis('off')
 
 def d3plotter(N, s, String='FinescaleSolution', boundary=None, zmax=None, zmin=None):
     fig = plt.figure(String)
@@ -189,7 +189,7 @@ def d3plotter(N, s, String='FinescaleSolution', boundary=None, zmax=None, zmin=N
     if zmin is not None:
         ax.set_zlim(zmin,zmax)
     ax.axis('off')
-    ax.grid(False)
+    ax.grid('off')
     fig.subplots_adjust(left=0.00,bottom=0.00,right=1,top=1,wspace=0.2,hspace=0.2)
 
 def drawPatches(N, a, fig, ax, te):
@@ -224,42 +224,42 @@ def AllshapesSixdrawCoefficient(N, a, b, c , d, e, f):
                origin='upper',  
                interpolation='none',
                cmap=cm.plasma)
-    plt.axis(False)
+    plt.axis('off')
     plt.subplot(162)
     plt.title("Shape 2.", fontsize=10)
     plt.imshow(bCube,
                origin='upper',   
                interpolation='none',
                cmap=cm.plasma)
-    plt.axis(False)
+    plt.axis('off')
     plt.subplot(163)
     plt.title("Shape 3.", fontsize=10)
     plt.imshow(cCube,
                origin='upper',   
                interpolation='none',
                cmap=cm.plasma)
-    plt.axis(False)
+    plt.axis('off')
     plt.subplot(164)
     plt.title("Shape 4.", fontsize=10)
     plt.imshow(dCube,
                origin='upper',  
                interpolation='none',
                cmap=cm.plasma)
-    plt.axis(False)
+    plt.axis('off')
     plt.subplot(165)
     plt.title("Shape 5.", fontsize=10)
     plt.imshow(eCube,
                origin='upper', 
                interpolation='none',
                cmap=cm.plasma)
-    plt.axis(False)
+    plt.axis('off')
     plt.subplot(166)
     plt.title("Shape 6.", fontsize=10)
     plt.imshow(fCube,
                origin='upper', 
                interpolation='none',
                cmap=cm.plasma)
-    plt.axis(False)
+    plt.axis('off')
 
 def drawCoefficientGrid(N, a, fig, ax, Greys=False):
     aCube = a.reshape(N)  

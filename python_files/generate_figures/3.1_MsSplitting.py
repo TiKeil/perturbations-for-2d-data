@@ -27,7 +27,7 @@ NWorldCoarse = np.array([8,8])
 NpCoarse = np.prod(NWorldCoarse+1)
 
 #ratio between Fine and Coarse
-NCoarseElement = NWorldFine/NWorldCoarse
+NCoarseElement = NWorldFine//NWorldCoarse
 
 boundaryConditions = np.array([[0, 0],
                                [0, 0]])

@@ -334,7 +334,7 @@ class Coefficient2d:
                 #can we do something here?
                 if A[i][j] == 0:
                     #will we do something here?
-                    A[i][j] = random.sample(valorbg,1)[0]
+                    A[i][j] = random.sample(list(valorbg),1)[0]
                     if equidistant:
                         A[i][j] = 1 #yes sure
                     #if yes then
@@ -1137,7 +1137,7 @@ class Coefficient2d:
                         thick = int(S[shapecounter][2])
                     
                         ratiocur = random.sample(ratioList,1)[0]
-                        decide = random.sample(decision,1)[0]
+                        decide = random.sample(list(decision),1)[0]
                         
                         NumberList = [x for x in Number if x == shapecounter]
                         if np.size(NumberList) == 1:
@@ -1473,7 +1473,7 @@ class Coefficient2d:
                         Len = int(S[shapecounter][1])
                         thick = int(S[shapecounter][2])
                     
-                        vanish = random.sample(decision,1)[0]
+                        vanish = random.sample(list(decision),1)[0]
                     
                         NumberList = [x for x in Number if x == shapecounter]
                         if np.size(NumberList) == 1:
@@ -1982,7 +1982,7 @@ class Coefficient2d:
                     Len = int(S[shapecounter][1])
                     thick = int(S[shapecounter][2])
             
-                    move = random.sample(decision,1)[0]
+                    move = random.sample(list(decision),1)[0]
                     step = random.sample(stepList,1)[0]
                     direction = random.sample(MoveList,1)[0]
                     

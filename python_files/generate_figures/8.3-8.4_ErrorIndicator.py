@@ -54,11 +54,12 @@ NWorldCoarse = np.array([16,16])
 NpCoarse = np.prod(NWorldCoarse+1)
 
 #ratio between Fine and Coarse
-NCoarseElement = NWorldFine/NWorldCoarse
+NCoarseElement = NWorldFine//NWorldCoarse
 
 boundaryConditions = np.array([[0, 0],
                                [0, 0]])
 
+print("starting and precomputing ...")
 world = World(NWorldCoarse, NCoarseElement, boundaryConditions)
 
 #righthandside

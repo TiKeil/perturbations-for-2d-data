@@ -3,25 +3,22 @@
 # Copyright holder: Tim Keil
 # License: BSD 2-Clause License (http://opensource.org/licenses/BSD-2-Clause)
 
-import os
-import sys
-import numpy as np
+
 import scipy.sparse as sparse
 import random
-import csv
 
 import matplotlib.pyplot as plt
 from visualize import drawCoefficient
 from data import *
 
-from gridlod import interp, coef, util, fem, world, linalg, femsolver
-import pg_rand, femsolverCoarse, buildcoef2d
+from gridlod import interp, coef, util, fem, femsolver
+import pg_rand, buildcoef2d
 from gridlod.world import World
 
 import timeit
 
 def result(pglod, world, A, R, f, k, String):
-    print("-------------- " + String + " ---------------")
+    print(("-------------- " + String + " ---------------"))
 
     NWorldFine = world.NWorldFine
     NWorldCoarse = world.NWorldCoarse
@@ -107,8 +104,8 @@ def result(pglod, world, A, R, f, k, String):
     leng = np.size(ToleranceListcomplete)
     for k in range(leng - 1, -1, -1):
         tol = ToleranceListcomplete[k]
-        print(" --- " + str(-k + leng) + "/" + str(leng) + " --- Tolerance: " + str(
-            round(tol, 5)) + " in " + String + " ---- ", end=' ')
+        print((" --- " + str(-k + leng) + "/" + str(leng) + " --- Tolerance: " + str(
+            round(tol, 5)) + " in " + String + " ---- "))
 
         start_runtime = timeit.default_timer()
         vistol, time_to_compute = pglod.updateCorrectors(Anew, tol, f, clearFineQuantities=False, Testing=True, runtime=True)
@@ -207,19 +204,19 @@ ABase = A.flatten()
 ROOT = '../../../test_data/Coef1/'
 
 # safe NworldFine
-with open("%s/NWorldFine.txt" % ROOT, 'wb') as csvfile:
+with open("%s/NWorldFine.txt" % ROOT, 'w') as csvfile:
     writer = csv.writer(csvfile)
     for val in NWorldFine:
         writer.writerow([val])
 
 # safe NworldCoarse
-with open("%s/NWorldCoarse.txt" % ROOT, 'wb') as csvfile:
+with open("%s/NWorldCoarse.txt" % ROOT, 'w') as csvfile:
     writer = csv.writer(csvfile)
     for val in NWorldCoarse:
         writer.writerow([val])
 
 # ABase
-with open("%s/OriginalCoeff.txt" % ROOT, 'wb') as csvfile:
+with open("%s/OriginalCoeff.txt" % ROOT, 'w') as csvfile:
     writer = csv.writer(csvfile)
     for val in ABase:
         writer.writerow([val])
@@ -230,7 +227,7 @@ f_fine = np.ones(NpFine)
 uFineFem, AFine, MFine = femsolver.solveFine(world, ABase, f_fine, None, boundaryConditions)
 
 # fine solution
-with open("%s/finescale.txt" % ROOT, 'wb') as csvfile:
+with open("%s/finescale.txt" % ROOT, 'w') as csvfile:
     writer = csv.writer(csvfile)
     for val in uFineFem:
         writer.writerow([val])
@@ -332,7 +329,7 @@ vis, eps, PotentialUpdated, recomputefractionsafe, errorplotinfo, errorworst, er
                                                                                                             k, 'Vanish')
 
 # runtime
-with open("%s/runtime.txt" % ROOT, 'wb') as csvfile:
+with open("%s/runtime.txt" % ROOT, 'w') as csvfile:
     writer = csv.writer(csvfile)
     for val in runtime:
         writer.writerow([val])

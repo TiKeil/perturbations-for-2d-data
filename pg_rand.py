@@ -71,7 +71,7 @@ class VcPetrovGalerkinLOD:
             #TInd is one coarse element    
             
             #mapper
-            iElement = util.convertpIndexToCoordinate(world.NWorldCoarse-1, TInd)
+            iElement = util.convertpLinearIndexToCoordIndex(world.NWorldCoarse-1, TInd)
                 
             ecComputeList.append((TInd, iElement))    
         
@@ -209,7 +209,7 @@ class VcPetrovGalerkinLOD:
             ageList[TInd] += 1
             
             #mapper
-            iElement = util.convertpIndexToCoordinate(world.NWorldCoarse-1, TInd)
+            iElement = util.convertpLinearIndexToCoordIndex(world.NWorldCoarse-1, TInd)
             ecT = ecListOrigin[TInd]
             if Testing:
                 epsilonT = epsilonList[TInd]
@@ -405,7 +405,7 @@ class VcPetrovGalerkinLOD:
             iPatchWorldFine = ecT.iPatchWorldCoarse*NCoarseElement
             
             patchpIndexMap = util.lowerLeftpIndexMap(NPatchFine, NWorldFine)
-            patchpStartIndex = util.convertpCoordinateToIndex(NWorldFine, iPatchWorldFine)
+            patchpStartIndex = util.convertpCoordIndexToLinearIndex(NWorldFine, iPatchWorldFine)
             
             colsT = TpStartIndices[TInd] + TpIndexMap
             rowsT = patchpStartIndex + patchpIndexMap
@@ -452,7 +452,7 @@ class VcPetrovGalerkinLOD:
             iPatchWorldFine = ecT.iPatchWorldCoarse*NCoarseElement
             
             patchpIndexMap = util.lowerLeftpIndexMap(NPatchFine, NWorldFine)
-            patchpStartIndex = util.convertpCoordinateToIndex(NWorldFine, iPatchWorldFine)
+            patchpStartIndex = util.convertpCoordIndexToLinearIndex(NWorldFine, iPatchWorldFine)
             
             colsT = TpStartIndices[TInd] + TpIndexMap
             rowsT = patchpStartIndex + patchpIndexMap
@@ -495,7 +495,7 @@ class VcPetrovGalerkinLOD:
             NPatchCoarse = ecT.NPatchCoarse
 
             patchpIndexMap = util.lowerLeftpIndexMap(NPatchCoarse, NWorldCoarse)
-            patchpStartIndex = util.convertpCoordinateToIndex(NWorldCoarse, ecT.iPatchWorldCoarse)
+            patchpStartIndex = util.convertpCoordIndexToLinearIndex(NWorldCoarse, ecT.iPatchWorldCoarse)
             
             colsT = TpStartIndices[TInd] + TpIndexMap
             rowsT = patchpStartIndex + patchpIndexMap
