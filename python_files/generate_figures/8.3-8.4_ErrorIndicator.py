@@ -16,7 +16,7 @@ import buildcoef2d
 from visualize import drawCoefficient
 
 def result(pglod, world, A, R, f, k, String):
-    print "------------------------------------- " + String + " -------------------------------------------" 
+    print(("------------------------------------- " + String + " -------------------------------------------")) 
     NWorldFine = world.NWorldFine
     NWorldCoarse = world.NWorldCoarse
     NCoarseElement = world.NCoarseElement
@@ -54,11 +54,12 @@ NWorldCoarse = np.array([16,16])
 NpCoarse = np.prod(NWorldCoarse+1)
 
 #ratio between Fine and Coarse
-NCoarseElement = NWorldFine/NWorldCoarse
+NCoarseElement = NWorldFine//NWorldCoarse
 
 boundaryConditions = np.array([[0, 0],
                                [0, 0]])
 
+print("starting and precomputing ...")
 world = World(NWorldCoarse, NCoarseElement, boundaryConditions)
 
 #righthandside

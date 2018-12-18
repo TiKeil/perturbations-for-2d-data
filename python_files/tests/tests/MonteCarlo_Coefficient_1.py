@@ -45,7 +45,7 @@ def result(pglod, world, CoefClass, A, f, MC=1, prob=100):
     plotting3z = np.zeros([MC-1,np.size(plist)])
 
     for i in range(0,MC):
-        print '_____Sample__ ' + str(i+1) + '/' + str(MC) + ' ____' 
+        print(('_____Sample__ ' + str(i+1) + '/' + str(MC) + ' ____')) 
         R = CoefClass.RandomVanish( probfactor      = prob,
                                     PartlyVanish    = None,
                                     Original        = True)
@@ -60,13 +60,13 @@ def result(pglod, world, CoefClass, A, f, MC=1, prob=100):
         
         ###### tolerance = 0 without computing ######
         vis, eps = pglod.updateCorrectors(Anew, 0, f, 1, clearFineQuantities=False, mc=True, Computing=None)
-        print 'Affected correctors: ' + str(np.sum(vis))
+        print(('Affected correctors: ' + str(np.sum(vis))))
         
         ##### VCLOD ######
         uVc = []
         updated = 0
         for p in plist:
-            print 'p = ' + str(p) + '%',
+            print(('p = ' + str(p) + '%'))
             uVcLod, updated = VcLod(pglod, world, Anew, eps, updated, numberofcorrectors=p)
             if p == 100:
                 uLod = uVcLod
@@ -146,7 +146,7 @@ def VcLod(pglod, world, Anew, eps, updated = 0,
     NpCoarse = np.prod(NWorldCoarse+1)
 
     ##### tolerance = certain ######
-    eps = filter(lambda x: x!=0, eps)
+    eps = [x for x in eps if x!=0]
     eps.sort()
     epssize = np.size(eps)
     until = int(round((numberofcorrectors/100. * epssize) +0.49,0))
@@ -157,7 +157,7 @@ def VcLod(pglod, world, Anew, eps, updated = 0,
         tolrev.append(eps[i])
     
     if epssize == 0:
-        print 'nothing to update'
+        print('nothing to update')
     else:
         if until >= epssize:
             tol = 0
@@ -166,7 +166,7 @@ def VcLod(pglod, world, Anew, eps, updated = 0,
 
         vistol = pglod.updateCorrectors(Anew, tol, f, clearFineQuantities=False, mc=True, Testing=True)
         updated += np.sum(vistol)
-        print 'Updated correctors: ' + str(updated)
+        print(('Updated correctors: ' + str(updated)))
         
     KFull = pglod.assembleMsStiffnessMatrix()
     MFull = fem.assemblePatchMatrix(NWorldCoarse, world.MLocCoarse)
@@ -264,14 +264,14 @@ pglod = pg_rand.VcPetrovGalerkinLOD(Aold, world, k, IPatchGenerator, 0)
 pglod.originCorrectors(clearFineQuantities=False)
 
 #Perturbations
-print '_____________ 1% Perturbations __________'
+print('_____________ 1% Perturbations __________')
 prob = 100
 
 MC = 100
 a, mum = result(pglod, world, CoefClass, A, f, MC, prob)
 
 #Perturbations
-print '_____________ 2% Perturbations __________'
+print('_____________ 2% Perturbations __________')
 prob = 50
 
 MC = 100

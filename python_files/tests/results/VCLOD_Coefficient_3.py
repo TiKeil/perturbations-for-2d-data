@@ -29,7 +29,7 @@ NCoarseElement = NWorldFine/NWorldCoarse
 ROOT = '../../../test_data/Coef3'
 
 OriginalCoeff = []
-f = open("%s/OriginalCoeff.txt" % ROOT, 'rb')
+f = open("%s/OriginalCoeff.txt" % ROOT, 'r')
 reader = csv.reader(f)
 for row in reader:
     OriginalCoeff.append(float(row[0])) 
@@ -39,7 +39,7 @@ Abase = np.array([])
 Abase = np.append(Abase,OriginalCoeff)
 
 finescale = []
-f = open("%s/finescale.txt" % ROOT, 'rb')
+f = open("%s/finescale.txt" % ROOT, 'r')
 reader = csv.reader(f)
 for row in reader:
     finescale.append(float(row[0])) 

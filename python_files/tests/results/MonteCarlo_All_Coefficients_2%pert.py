@@ -293,5 +293,5 @@ plt.legend()
 plt.show()
 
 for i in range(0,np.size(printer)):
-    print printer[i]
-    print printer2[i]
+    print((printer[i]))
+    print((printer2[i]))

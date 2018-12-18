@@ -58,10 +58,10 @@ class VcPetrovGalerkinLOD:
         self.ecListOrigin = [None]*NtCoarse
         
         if self.printLevel >= 2:
-            print 'Setting up workers for origin Correctors'
+            print('Setting up workers for origin Correctors')
         eccontroller.setupWorker(world, coefficient, IPatchGenerator, k, clearFineQuantities, self.printLevel)
         if self.printLevel >= 2:
-            print 'Done'
+            print('Done')
         
         #element corrector list has coarse element size 
         ecListOrigin = self.ecListOrigin
@@ -71,12 +71,12 @@ class VcPetrovGalerkinLOD:
             #TInd is one coarse element    
             
             #mapper
-            iElement = util.convertpIndexToCoordinate(world.NWorldCoarse-1, TInd)
+            iElement = util.convertpLinearIndexToCoordIndex(world.NWorldCoarse-1, TInd)
                 
             ecComputeList.append((TInd, iElement))    
         
         if self.printLevel >= 2:
-            print 'Waiting for results', len(ecComputeList)
+            print('Waiting for results', len(ecComputeList))
                     
         ecResultList = eccontroller.mapComputations(ecComputeList, self.printLevel)
         for ecResult, ecCompute in zip(ecResultList, ecComputeList):
@@ -180,10 +180,10 @@ class VcPetrovGalerkinLOD:
             ecListOrigin = self.ecList
 
         if self.printLevel >= 2:
-            print 'Setting up workers'
+            print('Setting up workers')
         eccontroller.setupWorker(world, coefficient, IPatchGenerator, k, clearFineQuantities, self.printLevel)
         if self.printLevel >= 2:
-            print 'Done'
+            print('Done')
         
         #only for coarse coefficient
         if self.ecList is not None and hasattr(coefficient, 'rCoarse'):
@@ -204,12 +204,12 @@ class VcPetrovGalerkinLOD:
         ecComputeList = []
         for TInd in range(NtCoarse):
             if self.printLevel >= 3:
-                print str(TInd) + ' / ' + str(NtCoarse),
+                print(str(TInd) + ' / ' + str(NtCoarse), end=' ')
             
             ageList[TInd] += 1
             
             #mapper
-            iElement = util.convertpIndexToCoordinate(world.NWorldCoarse-1, TInd)
+            iElement = util.convertpLinearIndexToCoordIndex(world.NWorldCoarse-1, TInd)
             ecT = ecListOrigin[TInd]
             if Testing:
                 epsilonT = epsilonList[TInd]
@@ -226,11 +226,11 @@ class VcPetrovGalerkinLOD:
                 epsilonList[TInd] = epsilonT
             
             if self.printLevel >= 2:
-                print 'epsilonT = ' + str(epsilonT), 
+                print('epsilonT = ' + str(epsilonT), end=' ') 
                 
             if epsilonT > epsilonTol:
                 if self.printLevel >= 2:
-                    print 'C'
+                    print('C')
                 if Testing:
                     epsilonList[TInd] = 0
                     self.currentTestingCorrector = TInd
@@ -240,16 +240,16 @@ class VcPetrovGalerkinLOD:
                 recomputeCount += 1
             else:
                 if self.printLevel > 1:
-                    print 'N'    
+                    print('N')    
 
         time_to_compute = timeit.default_timer() - start
 
         if self.printLevel >= 2:
-            print 'Waiting for results', len(ecComputeList)
+            print('Waiting for results', len(ecComputeList))
         
         if self.printLevel > 0 or Testing:
             if mc == 0:
-                print "To be recomputed: ", float(recomputeCount)/NtCoarse*100, '%'
+                print("To be recomputed: ", float(recomputeCount)/NtCoarse*100, '%')
         
         self.printLevel = 0
 
@@ -259,7 +259,7 @@ class VcPetrovGalerkinLOD:
                 ecList[ecCompute[0]] = ecResult
         else:
             if self.printLevel >= 1:
-                print "Not Recomputed!"
+                print("Not Recomputed!")
                 
         if Computing:
             self.ecList = ecList
@@ -346,7 +346,7 @@ class VcPetrovGalerkinLOD:
         NtCoarse = np.prod(world.NWorldCoarse)
         for TInd in range(NtCoarse):
             if self.printLevel > 0:
-                print str(TInd) + ' / ' + str(NtCoarse)
+                print(str(TInd) + ' / ' + str(NtCoarse))
                 
             ecT = self.ecList[TInd]
             
@@ -405,7 +405,7 @@ class VcPetrovGalerkinLOD:
             iPatchWorldFine = ecT.iPatchWorldCoarse*NCoarseElement
             
             patchpIndexMap = util.lowerLeftpIndexMap(NPatchFine, NWorldFine)
-            patchpStartIndex = util.convertpCoordinateToIndex(NWorldFine, iPatchWorldFine)
+            patchpStartIndex = util.convertpCoordIndexToLinearIndex(NWorldFine, iPatchWorldFine)
             
             colsT = TpStartIndices[TInd] + TpIndexMap
             rowsT = patchpStartIndex + patchpIndexMap
@@ -452,7 +452,7 @@ class VcPetrovGalerkinLOD:
             iPatchWorldFine = ecT.iPatchWorldCoarse*NCoarseElement
             
             patchpIndexMap = util.lowerLeftpIndexMap(NPatchFine, NWorldFine)
-            patchpStartIndex = util.convertpCoordinateToIndex(NWorldFine, iPatchWorldFine)
+            patchpStartIndex = util.convertpCoordIndexToLinearIndex(NWorldFine, iPatchWorldFine)
             
             colsT = TpStartIndices[TInd] + TpIndexMap
             rowsT = patchpStartIndex + patchpIndexMap
@@ -495,7 +495,7 @@ class VcPetrovGalerkinLOD:
             NPatchCoarse = ecT.NPatchCoarse
 
             patchpIndexMap = util.lowerLeftpIndexMap(NPatchCoarse, NWorldCoarse)
-            patchpStartIndex = util.convertpCoordinateToIndex(NWorldCoarse, ecT.iPatchWorldCoarse)
+            patchpStartIndex = util.convertpCoordIndexToLinearIndex(NWorldCoarse, ecT.iPatchWorldCoarse)
             
             colsT = TpStartIndices[TInd] + TpIndexMap
             rowsT = patchpStartIndex + patchpIndexMap

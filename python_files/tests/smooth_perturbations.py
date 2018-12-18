@@ -125,7 +125,7 @@ for N in NList:
     NWorldCoarse = np.array([N])
     boundaryConditions = np.array([[0, 0]])
 
-    NCoarseElement = NFine / NWorldCoarse
+    NCoarseElement = NFine // NWorldCoarse
     world = World(NWorldCoarse, NCoarseElement, boundaryConditions)
     AFine = fem.assemblePatchMatrix(NFine, world.ALocFine, aPert)
 
@@ -174,7 +174,7 @@ for N in NList:
     NWorldCoarse = np.array([N])
     boundaryConditions = np.array([[0, 0]])
 
-    NCoarseElement = NFine / NWorldCoarse
+    NCoarseElement = NFine // NWorldCoarse
     world = World(NWorldCoarse, NCoarseElement, boundaryConditions)
     AFine = fem.assemblePatchMatrix(NFine, world.ALocFine, jAj)
 

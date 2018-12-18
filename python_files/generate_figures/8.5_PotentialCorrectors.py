@@ -25,7 +25,7 @@ NWorldCoarse = np.array([16,16])
 NpCoarse = np.prod(NWorldCoarse+1)
 
 #ratio between Fine and Coarse
-NCoarseElement = NWorldFine/NWorldCoarse
+NCoarseElement = NWorldFine//NWorldCoarse
 
 boundaryConditions = np.array([[0, 0],
                                [0, 0]])
@@ -102,12 +102,12 @@ IPatchGenerator = lambda i, N: interp.L2ProjectionPatchMatrix(i, N, NWorldCoarse
 Aold = coef.coefficientFine(NWorldCoarse, NCoarseElement, ABase)
 
 for k in range(1,6):
-    print '<<<<<<<<<<<<<<<< ' + str(k) + ' >>>>>>>>>>>>>>>>'
+    print(('<<<<<<<<<<<<<<<< ' + str(k) + ' >>>>>>>>>>>>>>>>'))
     pglod = pg_rand.VcPetrovGalerkinLOD(Aold, world, k, IPatchGenerator, 1)
     pglod.originCorrectors(clearFineQuantities=False)
     
     #new Coefficient
-    ANew = R.flatten()
+    ANew = R2.flatten()
     Anew = coef.coefficientFine(NWorldCoarse, NCoarseElement, ANew)
     
     # tolerance = 0
@@ -117,7 +117,7 @@ for k in range(1,6):
     
     if k==5:
         plt.figure("Error indicator")
-        plt.plot(elemente,eps,label=String)
+        plt.plot(elemente,eps,label="e_{u,T}")
         plt.ylabel('$e_{u,T}$')
         plt.xlabel('Element')
         plt.subplots_adjust(left=0.09,bottom=0.09,right=0.99,top=0.99,wspace=0.2,hspace=0.2)

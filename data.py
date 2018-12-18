@@ -154,49 +154,49 @@ def safeShift(ROOT, R, vis, eps, PotentialUpdated, recomputefractionsafe, errorp
             
 def RegainChange(ROOT):
     C1Base = []
-    f = open('%s/C1Base.txt' % ROOT, 'rb')
+    f = open('%s/C1Base.txt' % ROOT, 'r')
     reader = csv.reader(f)
     for row in reader:
         C1Base.append(float(row[0]))
     f.close()
 
     C1eps = []
-    f = open('%s/C1eps.txt' % ROOT, 'rb')
+    f = open('%s/C1eps.txt' % ROOT, 'r')
     reader = csv.reader(f)
     for row in reader:
         C1eps.append(float(row[0]))
     f.close()
 
     C1errorbest = []
-    f = open('%s/C1errorbest.txt' % ROOT, 'rb')
+    f = open('%s/C1errorbest.txt' % ROOT, 'r')
     reader = csv.reader(f)
     for row in reader:
         C1errorbest.append(float(row[0]))
     f.close()
 
     C1errorplotinfo = []
-    f = open('%s/C1errorplotinfo.txt' % ROOT, 'rb')
+    f = open('%s/C1errorplotinfo.txt' % ROOT, 'r')
     reader = csv.reader(f)
     for row in reader:
         C1errorplotinfo.append(float(row[0]))
     f.close()
 
     C1errorworst = []
-    f = open('%s/C1errorworst.txt' % ROOT, 'rb')
+    f = open('%s/C1errorworst.txt' % ROOT, 'r')
     reader = csv.reader(f)
     for row in reader:
         C1errorworst.append(float(row[0]))
     f.close()
 
     C1vis = []
-    f = open('%s/C1vis.txt' % ROOT, 'rb')
+    f = open('%s/C1vis.txt' % ROOT, 'r')
     reader = csv.reader(f)
     for row in reader:
         C1vis.append(float(row[0]))
     f.close()
 
     C1recomputefractionsafe = []
-    f = open('%s/C1recomputefractionsafe.txt' % ROOT, 'rb')
+    f = open('%s/C1recomputefractionsafe.txt' % ROOT, 'r')
     reader = csv.reader(f)
     for row in reader:
         C1recomputefractionsafe.append(float(row[0]))
@@ -206,49 +206,49 @@ def RegainChange(ROOT):
     
 def RegainVanish(ROOT):
     VBase = []
-    f = open('%s/VBase.txt' % ROOT, 'rb')
+    f = open('%s/VBase.txt' % ROOT, 'r')
     reader = csv.reader(f)
     for row in reader:
         VBase.append(float(row[0]))
     f.close()
 
     Veps = []
-    f = open('%s/Veps.txt' % ROOT, 'rb')
+    f = open('%s/Veps.txt' % ROOT, 'r')
     reader = csv.reader(f)
     for row in reader:
         Veps.append(float(row[0]))
     f.close()
 
     Verrorbest = []
-    f = open('%s/Verrorbest.txt' % ROOT, 'rb')
+    f = open('%s/Verrorbest.txt' % ROOT, 'r')
     reader = csv.reader(f)
     for row in reader:
         Verrorbest.append(float(row[0]))
     f.close()
 
     Verrorplotinfo = []
-    f = open('%s/Verrorplotinfo.txt' % ROOT, 'rb')
+    f = open('%s/Verrorplotinfo.txt' % ROOT, 'r')
     reader = csv.reader(f)
     for row in reader:
         Verrorplotinfo.append(float(row[0]))
     f.close()
 
     Verrorworst = []
-    f = open('%s/Verrorworst.txt' % ROOT, 'rb')
+    f = open('%s/Verrorworst.txt' % ROOT, 'r')
     reader = csv.reader(f)
     for row in reader:
         Verrorworst.append(float(row[0]))
     f.close()
 
     Vvis = []
-    f = open('%s/Vvis.txt' % ROOT, 'rb')
+    f = open('%s/Vvis.txt' % ROOT, 'r')
     reader = csv.reader(f)
     for rovw in reader:
         Vvis.append(float(row[0]))
     f.close()
 
     Vrecomputefractionsafe = []
-    f = open('%s/Vrecomputefractionsafe.txt' % ROOT, 'rb')
+    f = open('%s/Vrecomputefractionsafe.txt' % ROOT, 'r')
     reader = csv.reader(f)
     for row in reader:
         Vrecomputefractionsafe.append(float(row[0]))
@@ -258,49 +258,49 @@ def RegainVanish(ROOT):
     
 def RegainShift(ROOT):
     M1Base = []
-    f = open('%s/M1Base.txt' % ROOT, 'rb')
+    f = open('%s/M1Base.txt' % ROOT, 'r')
     reader = csv.reader(f)
     for row in reader:
         M1Base.append(float(row[0]))
     f.close()
 
     M1eps = []
-    f = open('%s/M1eps.txt' % ROOT, 'rb')
+    f = open('%s/M1eps.txt' % ROOT, 'r')
     reader = csv.reader(f)
     for row in reader:
         M1eps.append(float(row[0]))
     f.close()
 
     M1errorbest = []
-    f = open('%s/M1errorbest.txt' % ROOT, 'rb')
+    f = open('%s/M1errorbest.txt' % ROOT, 'r')
     reader = csv.reader(f)
     for row in reader:
         M1errorbest.append(float(row[0]))
     f.close()
 
     M1errorplotinfo = []
-    f = open('%s/M1errorplotinfo.txt' % ROOT, 'rb')
+    f = open('%s/M1errorplotinfo.txt' % ROOT, 'r')
     reader = csv.reader(f)
     for row in reader:
         M1errorplotinfo.append(float(row[0]))
     f.close()
 
     M1errorworst = []
-    f = open('%s/M1errorworst.txt' % ROOT, 'rb')
+    f = open('%s/M1errorworst.txt' % ROOT, 'r')
     reader = csv.reader(f)
     for row in reader:
         M1errorworst.append(float(row[0]))
     f.close()
 
     M1vis = []
-    f = open('%s/M1vis.txt' % ROOT, 'rb')
+    f = open('%s/M1vis.txt' % ROOT, 'r')
     reader = csv.reader(f)
     for row in reader:
         M1vis.append(float(row[0]))
     f.close()
 
     M1recomputefractionsafe = []
-    f = open('%s/M1recomputefractionsafe.txt' % ROOT, 'rb')
+    f = open('%s/M1recomputefractionsafe.txt' % ROOT, 'r')
     reader = csv.reader(f)
     for row in reader:
         M1recomputefractionsafe.append(float(row[0]))
@@ -376,91 +376,91 @@ def safer(ROOT, mum, a, plottingx, plottingy, plottingz, plotting2x, plotting2y,
     
 def regainer(ROOT):
     mum = []
-    f = open('%s/mum.txt' % ROOT, 'rb')
+    f = open('%s/mum.txt' % ROOT, 'r')
     reader = csv.reader(f)
     for row in reader:
         mum.append(float(row[0]))
     f.close()
     
     a = []
-    f = open('%s/a.txt' % ROOT, 'rb')
+    f = open('%s/a.txt' % ROOT, 'r')
     reader = csv.reader(f)
     for row in reader:
         a.append(float(row[0]))
     f.close()
 
     ABase = []
-    f = open('%s/Matrix.txt' % ROOT, 'rb')
+    f = open('%s/Matrix.txt' % ROOT, 'r')
     reader = csv.reader(f)
     for row in reader:
         ABase.append(float(row[0]))
     f.close()
     
     ems = []
-    f = open('%s/ems.txt' % ROOT, 'rb')
+    f = open('%s/ems.txt' % ROOT, 'r')
     reader = csv.reader(f)
     for row in reader:
         ems.append(float(row[0]))
     f.close()
     
     plottingx = []
-    f = open('%s/plottingx.txt' % ROOT, 'rb')
+    f = open('%s/plottingx.txt' % ROOT, 'r')
     reader = csv.reader(f)
     for row in reader:
         plottingx.append(float(row[0]))
     f.close()
 
     plottingy = []
-    f = open('%s/plottingy.txt' % ROOT, 'rb')
+    f = open('%s/plottingy.txt' % ROOT, 'r')
     reader = csv.reader(f)
     for row in reader:
         plottingy.append(float(row[0]))
     f.close()
     
     plottingz = []
-    f = open('%s/plottingz.txt' % ROOT, 'rb')
+    f = open('%s/plottingz.txt' % ROOT, 'r')
     reader = csv.reader(f)
     for row in reader:
         plottingz.append(float(row[0]))
     f.close()
 
     plotting2x = []
-    f = open('%s/plotting2x.txt' % ROOT, 'rb')
+    f = open('%s/plotting2x.txt' % ROOT, 'r')
     reader = csv.reader(f)
     for row in reader:
         plotting2x.append(float(row[0]))
     f.close()
 
     plotting2y = []
-    f = open('%s/plotting2y.txt' % ROOT, 'rb')
+    f = open('%s/plotting2y.txt' % ROOT, 'r')
     reader = csv.reader(f)
     for row in reader:
         plotting2y.append(float(row[0]))
     f.close()
     
     plotting2z = []
-    f = open('%s/plotting2z.txt' % ROOT, 'rb')
+    f = open('%s/plotting2z.txt' % ROOT, 'r')
     reader = csv.reader(f)
     for row in reader:
         plotting2z.append(float(row[0]))
     f.close()
     
     plotting3x = []
-    f = open('%s/plotting3x.txt' % ROOT, 'rb')
+    f = open('%s/plotting3x.txt' % ROOT, 'r')
     reader = csv.reader(f)
     for row in reader:
         plotting3x.append(float(row[0]))
     f.close()
 
     plotting3y = []
-    f = open('%s/plotting3y.txt' % ROOT, 'rb')
+    f = open('%s/plotting3y.txt' % ROOT, 'r')
     reader = csv.reader(f)
     for row in reader:
         plotting3y.append(float(row[0]))
     f.close()
     
     plotting3z = []
-    f = open('%s/plotting3z.txt' % ROOT, 'rb')
+    f = open('%s/plotting3z.txt' % ROOT, 'r')
     reader = csv.reader(f)
     for row in reader:
         plotting3z.append(float(row[0]))

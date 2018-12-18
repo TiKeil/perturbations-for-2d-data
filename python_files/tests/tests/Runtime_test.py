@@ -3,25 +3,22 @@
 # Copyright holder: Tim Keil
 # License: BSD 2-Clause License (http://opensource.org/licenses/BSD-2-Clause)
 
-import os
-import sys
-import numpy as np
+
 import scipy.sparse as sparse
 import random
-import csv
 
 import matplotlib.pyplot as plt
 from visualize import drawCoefficient
 from data import *
 
-from gridlod import interp, coef, util, fem, world, linalg, femsolver
-import pg_rand, femsolverCoarse, buildcoef2d
+from gridlod import interp, coef, util, fem, femsolver
+import pg_rand, buildcoef2d
 from gridlod.world import World
 
 import timeit
 
 def result(pglod, world, A, R, f, k, String):
-    print "-------------- " + String + " ---------------"
+    print(("-------------- " + String + " ---------------"))
 
     NWorldFine = world.NWorldFine
     NWorldCoarse = world.NWorldCoarse
@@ -40,7 +37,7 @@ def result(pglod, world, A, R, f, k, String):
     # reference solution
     f_fine = np.ones(NpFine)
     uFineFem, AFine, MFine = femsolver.solveFine(world, ANew, f_fine, None, boundaryConditions)
-    print('Runtime: it took {} sec to compute the reference solution'.format(timeit.default_timer() - start_solver))
+    print(('Runtime: it took {} sec to compute the reference solution'.format(timeit.default_timer() - start_solver)))
 
     start_solve_system = timeit.default_timer()
     # worst solution
@@ -64,7 +61,7 @@ def result(pglod, world, A, R, f, k, String):
     uCoarse = xFull
     uLodFine = modifiedBasis * xFull
 
-    print('Runtime: It took {} sec to apply LOD with given correctors'.format(timeit.default_timer()-start_solve_system))
+    print(('Runtime: It took {} sec to apply LOD with given correctors'.format(timeit.default_timer()-start_solve_system)))
     uLodFineWorst = uLodFine
 
     # energy error
@@ -74,13 +71,13 @@ def result(pglod, world, A, R, f, k, String):
     # tolerance = 0
     vis, eps = pglod.updateCorrectors(Anew, 0, f, 1, clearFineQuantities=False, Computing=False)
 
-    print('Runtime: It took {} sec to compute the error indicators.'.format(timeit.default_timer()-start_runtime))
+    print(('Runtime: It took {} sec to compute the error indicators.'.format(timeit.default_timer()-start_runtime)))
 
     PotentialCorrectors = np.sum(vis)
     elemente = np.arange(np.prod(NWorldCoarse))
 
     # identify tolerances
-    epsnozero = filter(lambda x: x != 0, eps)
+    epsnozero = [x for x in eps if x != 0]
 
     assert (np.size(epsnozero) != 0)
 
@@ -107,8 +104,8 @@ def result(pglod, world, A, R, f, k, String):
     leng = np.size(ToleranceListcomplete)
     for k in range(leng - 1, -1, -1):
         tol = ToleranceListcomplete[k]
-        print " --- " + str(-k + leng) + "/" + str(leng) + " --- Tolerance: " + str(
-            round(tol, 5)) + " in " + String + " ---- ",
+        print((" --- " + str(-k + leng) + "/" + str(leng) + " --- Tolerance: " + str(
+            round(tol, 5)) + " in " + String + " ---- "))
 
         start_runtime = timeit.default_timer()
         vistol, time_to_compute = pglod.updateCorrectors(Anew, tol, f, clearFineQuantities=False, Testing=True, runtime=True)
@@ -150,7 +147,7 @@ def result(pglod, world, A, R, f, k, String):
     uLodFinebest = uLodFine
     errorbest = np.sqrt(np.dot(uFineFem - uLodFinebest, AFine * (uFineFem - uLodFinebest)))
 
-    print('Runtime: Total time of updating: {} sec.'.format(total_time))
+    print(('Runtime: Total time of updating: {} sec.'.format(total_time)))
     for k in range(leng - 1, -1, -1):
         errorBest.append(errorbest)
         errorWorst.append(errorworst)
@@ -207,19 +204,19 @@ ABase = A.flatten()
 ROOT = '../../../test_data/Coef1/'
 
 # safe NworldFine
-with open("%s/NWorldFine.txt" % ROOT, 'wb') as csvfile:
+with open("%s/NWorldFine.txt" % ROOT, 'w') as csvfile:
     writer = csv.writer(csvfile)
     for val in NWorldFine:
         writer.writerow([val])
 
 # safe NworldCoarse
-with open("%s/NWorldCoarse.txt" % ROOT, 'wb') as csvfile:
+with open("%s/NWorldCoarse.txt" % ROOT, 'w') as csvfile:
     writer = csv.writer(csvfile)
     for val in NWorldCoarse:
         writer.writerow([val])
 
 # ABase
-with open("%s/OriginalCoeff.txt" % ROOT, 'wb') as csvfile:
+with open("%s/OriginalCoeff.txt" % ROOT, 'w') as csvfile:
     writer = csv.writer(csvfile)
     for val in ABase:
         writer.writerow([val])
@@ -230,7 +227,7 @@ f_fine = np.ones(NpFine)
 uFineFem, AFine, MFine = femsolver.solveFine(world, ABase, f_fine, None, boundaryConditions)
 
 # fine solution
-with open("%s/finescale.txt" % ROOT, 'wb') as csvfile:
+with open("%s/finescale.txt" % ROOT, 'w') as csvfile:
     writer = csv.writer(csvfile)
     for val in uFineFem:
         writer.writerow([val])
@@ -326,13 +323,13 @@ start = timeit.default_timer()
 pglod.originCorrectors(clearFineQuantities=False)
 stop = timeit.default_timer()
 
-print('Runtime: It took {} seconds to compute the reference configuration.'.format(stop-start))
+print(('Runtime: It took {} seconds to compute the reference configuration.'.format(stop-start)))
 
 vis, eps, PotentialUpdated, recomputefractionsafe, errorplotinfo, errorworst, errorbest, runtime = result(pglod, world, A, V, f,
                                                                                                             k, 'Vanish')
 
 # runtime
-with open("%s/runtime.txt" % ROOT, 'wb') as csvfile:
+with open("%s/runtime.txt" % ROOT, 'w') as csvfile:
     writer = csv.writer(csvfile)
     for val in runtime:
         writer.writerow([val])
