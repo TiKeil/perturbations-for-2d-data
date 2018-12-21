@@ -144,8 +144,8 @@ class VcPetrovGalerkinLOD:
             
     def updateCorrectors(self, coefficient, epsilonTol, f, epsilonQuestion =0, clearFineQuantities=True, Testing = None, Computing= True, mc=0, new_correctors = False, runtime=False):
         assert(self.ecListOrigin is not None)
-        if epsilonTol == 0 and Computing == True and mc==0:
-            self.printLevel = 2
+        #if epsilonTol == 0 and Computing == True and mc==0:
+            #self.printLevel = 2
 
         start = timeit.default_timer()
 
