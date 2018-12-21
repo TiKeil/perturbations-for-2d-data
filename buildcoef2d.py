@@ -1,11 +1,16 @@
 # This file is part of the master thesis "Variational crimes in the Localized orthogonal decomposition method":
-#   https://github.com/TiKeil/Masterthesis-LOD.git
+#   https://github.com/TiKeil/MasterthesisLOD.git
 # Copyright holder: Tim Keil 
 # License: BSD 2-Clause License (http://opensource.org/licenses/BSD-2-Clause)
 
 
 import numpy as np
 import random
+
+"""
+Note: This file contains a lot of nonsense code, mostly deprecated from fewer experiments. For usability please have 
+a look at the buildcoef2d_howto or at the generate_figures files in https://github.com/TiKeil/MasterthesisLOD.git 
+"""
 
 class Coefficient2d:
     def __init__(self,NWorldFine, 
@@ -30,7 +35,6 @@ class Coefficient2d:
                     Boxes2n=None,
                     Channels2n=None,
                     NewShapes=None,
-                    RandomInverse=None,
                     TestExample=None):
         
         '''
@@ -264,7 +268,8 @@ class Coefficient2d:
         if self.probfactor > 0:
             valorbg = np.ones(self.probfactor)*bg                         #percentage
             valorbg[0] = val
-        
+
+        # TODO
         if self.probfactor < 0:
             valorbg = np.ones(-self.probfactor)*val                         #percentage
             valorbg[0] = bg
@@ -845,7 +850,7 @@ class Coefficient2d:
             C = self.Matrix.copy()
             S = self.ShapeRememberOriginal.copy()
         
-        A = C.copy()
+        A = self.Matrix.copy()
         #ratio
         ratioList = [ratio]
         if randomvalue is not None:
@@ -881,7 +886,7 @@ class Coefficient2d:
         if ShapeRestriction:
             for i in range(0,NWorldFine[0]):
                 for j in range(0,NWorldFine[1]):
-                    if A[i][j]==1:
+                    if A[i][j]!=self.bg:
                         shapecounter += 1
                         #find the right shape
                         #regain the shape length and thicknes
@@ -1087,7 +1092,7 @@ class Coefficient2d:
             C = self.Matrix.copy()
             S = self.ShapeRememberOriginal.copy()
         
-        A = C.copy()
+        A = self.Matrix.copy()
 
         if Number is None:
             Number = [int(round(np.shape(S)[0]/2.,0))]
@@ -1144,14 +1149,7 @@ class Coefficient2d:
                             decide = 1
                         else:
                             decide = 0
-                        
-                        
-                        NumberList = [x for x in Number if x == shapecounter]
-                        if np.size(NumberList) == 1:
-                            move = 1
-                        else:
-                            move = 0
-                        
+
                         
                         if zuf1 == 1:
                             A, C = self.ValueChangeRight(A, C, i, j, ChangeRight, decide, decision, ShapeWave, ratioList, ratiocur, val, Len, thick)
