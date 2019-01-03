@@ -1896,7 +1896,7 @@ class Coefficient2d:
                     ChangeDiagr2=1, 
                     ChangeDiagl1=1, 
                     ChangeDiagl2=1,
-                    Right=1,
+                    Right=0,
                     BottomRight=0,
                     Bottom=0,
                     BottomLeft=0,
@@ -1947,7 +1947,7 @@ class Coefficient2d:
         if AllDirections:
             MoveList = [r for r in range(1,9)]
         MoveList = list([x for x in MoveList if x!=0])
-        
+
         #for remember
         shapecounter = -1
         

@@ -13,7 +13,7 @@ from matplotlib import cm
 from gridlod import util
 
 
-def drawCoefficient(N, a, greys=False, normalize=None):
+def drawCoefficient(N, a, greys=False, normalize=None, cmap_default = False, colorbar=False):
     '''
     visualizing the 2d coefficient
     '''
@@ -22,6 +22,8 @@ def drawCoefficient(N, a, greys=False, normalize=None):
 
     if greys:
         cmap = 'Greys'
+    elif cmap_default:
+        cmap = None
     else:
         cmap = cm.plasma
 
@@ -42,6 +44,8 @@ def drawCoefficient(N, a, greys=False, normalize=None):
     plt.tick_params(axis='both', which='both', bottom=False, top=False, labelbottom=False, right=False, left=False,
                     labelleft=False)
     plt.subplots_adjust(left=0.00, bottom=0.02, right=1, top=0.95, wspace=0.2, hspace=0.2)
+    if colorbar:
+        plt.colorbar()
 
 def drawCoefficientwt(N, a, greys=False):
     '''
