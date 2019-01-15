@@ -189,9 +189,12 @@ class VcPetrovGalerkinLOD:
         if self.ecList is not None and hasattr(coefficient, 'rCoarse'):
             ANew = coefficient._aBase
             AOld = deepcopy(self.origincoef.aFine)
-            delta = np.abs((AOld-ANew)/np.sqrt(AOld*ANew))
-            ceta = np.abs(AOld/ANew)
-        
+            if ANew.ndim == 1:
+                delta = np.abs((AOld-ANew)/np.sqrt(AOld*ANew))
+            else:
+                delta = np.abs((AOld-ANew) * np.linalg.inv(np.sqrt(AOld)) )
+                # delta = np.abs((AOld - ANew) * np.linalg.inv(np.sqrt(AOld)) * np.linalg.inv(np.sqrt(ANew)))
+
         # saves the age of the corrector and error indicator for element
         ageList = self.ageList
         
@@ -218,8 +221,7 @@ class VcPetrovGalerkinLOD:
                     coefficientPatch = coefficient.localize(ecT.iPatchWorldCoarse, ecT.NPatchCoarse)
                     epsilonT = ecList[TInd].computeErrorIndicatorFineWithLagging(coefficientPatch.aFine, coefficientPatch.aLagging)
                 if hasattr(coefficient, 'rCoarse'):
-                    coefficientPatch = coefficient.localize(ecT.iPatchWorldCoarse, ecT.NPatchCoarse)
-                    epsilonT = ecListOrigin[TInd].computeTimsCoarseErrorIndicator(delta,ceta)
+                    epsilonT = ecListOrigin[TInd].computeLocalCoarseErrorIndicator(delta)
                 elif hasattr(ecT, 'fsi'):
                     coefficientPatch = coefficient.localize(ecT.iPatchWorldCoarse, ecT.NPatchCoarse)
                     epsilonT = ecListOrigin[TInd].computeErrorIndicatorFine(coefficientPatch)
