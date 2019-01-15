@@ -7,15 +7,10 @@ import numpy as np
 import scipy.sparse as sparse
 
 import matplotlib.pyplot as plt
-from mpl_toolkits.mplot3d import Axes3D
-from matplotlib.ticker import LinearLocator, FormatStrFormatter, MultipleLocator
-from matplotlib import cm
 
 from gridlod import util, world, fem, coef, interp
 from gridlod.world import World
-import pg_rand
-import femsolverCoarse
-import buildcoef2d
+import pg_pert
 
 def PGsolver(world, ABase, f,k):
     NWorldFine = world.NWorldFine
@@ -32,7 +27,7 @@ def PGsolver(world, ABase, f,k):
     #Coefficient (need flatten form)
     aCoef = coef.coefficientFine(NWorldCoarse, NCoarseElement, ABase)
 
-    pglod = pg_rand.VcPetrovGalerkinLOD(aCoef, world, k, IPatchGenerator, 0)
+    pglod = pg_pert.PerturbedPetrovGalerkinLOD(aCoef, world, k, IPatchGenerator, 0)
     pglod.originCorrectors(clearFineQuantities=False)
 
     KFull = pglod.assembleMsStiffnessMatrix()                                    
@@ -133,7 +128,7 @@ for k in range(2,5):
             plt.plot(xp,uSol,'k', label='$u_{\epsilon}(x)$')
             plt.plot(xpCoarse,uCoarseFull,'o--', label= '$u^{PG}(x)$')
             plt.title('1/H= ' + str(N),fontsize="small")
-            plt.tick_params(axis='both', which='both', bottom='off', top='off', labelbottom='off', right='off', left='off', labelleft='off')
+            plt.tick_params(axis='both', which='both', bottom=False, top=False, labelbottom=False, right=False, left=False, labelleft=False)
             plt.legend(frameon=False,fontsize="small")
             
     #extension of the plot

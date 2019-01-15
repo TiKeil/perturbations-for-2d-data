@@ -1,18 +1,14 @@
-import os
-import sys
-import numpy as np
 import scipy.sparse as sparse
-import scipy.stats as stats
 import random
-import csv
 
 import matplotlib.pyplot as plt
 from visualize import drawCoefficient
-from data import * 
+from data import *
 
-from gridlod import interp, coef, util, fem, world, linalg, femsolver
-import pg_rand, femsolverCoarse, buildcoef2d
+from gridlod import interp, coef, util, fem, femsolver
+import pg_pert, buildcoef2d
 from gridlod.world import World
+
 
 def result(pglod, world, CoefClass, A, f, MC=1, prob=100):
     NWorldFine = world.NWorldFine
@@ -59,7 +55,7 @@ def result(pglod, world, CoefClass, A, f, MC=1, prob=100):
         Anew = coef.coefficientFine(NWorldCoarse, NCoarseElement, ANew)
         
         ###### tolerance = 0 without computing ######
-        vis, eps = pglod.updateCorrectors(Anew, 0, f, 1, clearFineQuantities=False, mc=True, Computing=None)
+        vis, eps = pglod.updateCorrectors(Anew, 0, clearFineQuantities=False, mc=True, Computing=None)
         print(('Affected correctors: ' + str(np.sum(vis))))
         
         ##### VCLOD ######
@@ -164,7 +160,7 @@ def VcLod(pglod, world, Anew, eps, updated = 0,
         else:
             tol = tolrev[until]
 
-        vistol = pglod.updateCorrectors(Anew, tol, f, clearFineQuantities=False, mc=True, Testing=True)
+        vistol, _ = pglod.updateCorrectors(Anew, tol, clearFineQuantities=False, mc=True, Testing=True)
         updated += np.sum(vistol)
         print(('Updated correctors: ' + str(updated)))
         
@@ -203,7 +199,7 @@ NWorldCoarse = np.array([16,16])
 NpCoarse = np.prod(NWorldCoarse+1)
 
 #ratio between Fine and Coarse
-NCoarseElement = NWorldFine/NWorldCoarse
+NCoarseElement = NWorldFine//NWorldCoarse
 
 boundaryConditions = np.array([[0, 0],
                                [0, 0]])
@@ -259,7 +255,7 @@ IPatchGenerator = lambda i, N: interp.L2ProjectionPatchMatrix(i, N, NWorldCoarse
 ABase = A.flatten()
 Aold = coef.coefficientFine(NWorldCoarse, NCoarseElement, ABase)
 
-pglod = pg_rand.VcPetrovGalerkinLOD(Aold, world, k, IPatchGenerator, 0)
+pglod = pg_pert.PerturbedPetrovGalerkinLOD(Aold, world, k, IPatchGenerator, 0)
 pglod.originCorrectors(clearFineQuantities=False)
 
 #Perturbations

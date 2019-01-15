@@ -12,7 +12,7 @@ from visualize import drawCoefficient
 from data import *
 
 from gridlod import interp, coef, util, fem, femsolver
-import pg_rand, buildcoef2d
+import pg_pert, buildcoef2d
 from gridlod.world import World
 
 import timeit
@@ -69,7 +69,7 @@ def result(pglod, world, A, R, f, k, String):
 
     start_runtime = timeit.default_timer()
     # tolerance = 0
-    vis, eps = pglod.updateCorrectors(Anew, 0, f, 1, clearFineQuantities=False, Computing=False)
+    vis, eps = pglod.updateCorrectors(Anew, 0, clearFineQuantities=False, Computing=False)
 
     print(('Runtime: It took {} sec to compute the error indicators.'.format(timeit.default_timer()-start_runtime)))
 
@@ -108,7 +108,7 @@ def result(pglod, world, A, R, f, k, String):
             round(tol, 5)) + " in " + String + " ---- "))
 
         start_runtime = timeit.default_timer()
-        vistol, time_to_compute = pglod.updateCorrectors(Anew, tol, f, clearFineQuantities=False, Testing=True, runtime=True)
+        vistol, time_to_compute = pglod.updateCorrectors(Anew, tol, clearFineQuantities=False, Testing=True, runtime=True)
         total_time += timeit.default_timer()-start_runtime- time_to_compute
         runtime.append(total_time)
 
@@ -167,7 +167,7 @@ NWorldCoarse = np.array([16, 16])
 NpCoarse = np.prod(NWorldCoarse + 1)
 
 # ratio between Fine and Coarse
-NCoarseElement = NWorldFine / NWorldCoarse
+NCoarseElement = NWorldFine // NWorldCoarse
 
 boundaryConditions = np.array([[0, 0],
                                [0, 0]])
@@ -235,7 +235,7 @@ with open("%s/finescale.txt" % ROOT, 'w') as csvfile:
 plt.figure("Original")
 drawCoefficient(NWorldFine, ABase, greys=True)
 plt.title("Original coefficient")
-plt.show()
+
 
 # random seed
 random.seed(20)
@@ -247,7 +247,7 @@ decision = np.zeros(100)
 decision[0] = 1
 
 for i in range(0, valc):
-    a = random.sample(decision, 1)[0]
+    a = random.sample(list(decision), 1)[0]
     if a == 1:
         numbers.append(i)
 
@@ -317,7 +317,7 @@ IPatchGenerator = lambda i, N: interp.L2ProjectionPatchMatrix(i, N, NWorldCoarse
 ABase = A.flatten()
 Aold = coef.coefficientFine(NWorldCoarse, NCoarseElement, ABase)
 
-pglod = pg_rand.VcPetrovGalerkinLOD(Aold, world, k, IPatchGenerator, 0)
+pglod = pg_pert.PerturbedPetrovGalerkinLOD(Aold, world, k, IPatchGenerator, 0)
 
 start = timeit.default_timer()
 pglod.originCorrectors(clearFineQuantities=False)
@@ -333,3 +333,5 @@ with open("%s/runtime.txt" % ROOT, 'w') as csvfile:
     writer = csv.writer(csvfile)
     for val in runtime:
         writer.writerow([val])
+
+plt.show()

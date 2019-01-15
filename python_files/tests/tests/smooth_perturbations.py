@@ -8,7 +8,6 @@ import matplotlib.pyplot as plt
 
 from gridlod import util, world, fem, femsolver
 from gridlod.world import World
-import femsolverCoarse, buildcoef2d
 
 def index_search(x, xpcoarse):
     # This function gets the correct index of the non transformed solution

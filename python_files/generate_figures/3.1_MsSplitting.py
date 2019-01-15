@@ -9,8 +9,7 @@ import scipy.sparse as sparse
 import matplotlib.pyplot as plt 
 from gridlod import interp, coef, util, fem, world, linalg, femsolver
 from gridlod.world import World
-import femsolverCoarse
-import pg_rand
+import pg_pert
 import buildcoef2d
 
 from visualize import drawCoefficient, d3plotter
@@ -80,7 +79,7 @@ aCoef = coef.coefficientFine(NWorldCoarse, NCoarseElement, ABase)
 
 k=4
 
-pglod = pg_rand.VcPetrovGalerkinLOD(aCoef, world, k, IPatchGenerator, 2)
+pglod = pg_pert.PerturbedPetrovGalerkinLOD(aCoef, world, k, IPatchGenerator, 2)
 pglod.originCorrectors(clearFineQuantities=False)
 
 KFull = pglod.assembleMsStiffnessMatrix()                                    

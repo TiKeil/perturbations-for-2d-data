@@ -98,13 +98,13 @@ for N in NList:
         plt.plot(xp,uSol,'k', label='$u_{\epsilon}(x)$')
         plt.plot(xpCoarse,uCoarseFull,'o--', label= 'u_h(x)')
         plt.title('1/h= ' + str(N),fontsize="small")
-        plt.tick_params(axis='both', which='both', bottom='off', top='off', labelbottom='off', right='off', left='off', labelleft='off')
+        plt.tick_params(axis='both', which='both', bottom=False, top=False, labelbottom=False, right=False, left=False, labelleft=False)
         plt.legend(frameon=False,fontsize="small")
     else:
         plt.plot(xp,uSol,'k', label='$u_{\epsilon}(x)$')
         plt.plot(xpCoarse,uCoarseFull,'--', label= 'u_h(x)')
         plt.title('1/h= ' + str(N),fontsize="small")
-        plt.tick_params(axis='both', which='both', bottom='off', top='off', labelbottom='off', right='off', left='off', labelleft='off')
+        plt.tick_params(axis='both', which='both', bottom=False, top=False, labelbottom=False, right=False, left=False, labelleft=False)
         plt.legend(frameon=False,fontsize="small")
 
 plt.figure("Error")

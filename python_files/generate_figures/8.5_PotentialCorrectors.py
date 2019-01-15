@@ -7,8 +7,8 @@ import numpy as np
 
 import matplotlib.pyplot as plt
 
-from gridlod import interp, coef, util, fem, world, linalg
-import pg_rand, femsolverCoarse, buildcoef2d
+from gridlod import interp, coef
+import pg_pert, buildcoef2d
 from gridlod.world import World
 
 from visualize import drawCoefficient, drawCoefficientGrid, drawCoefficientwg
@@ -103,7 +103,7 @@ Aold = coef.coefficientFine(NWorldCoarse, NCoarseElement, ABase)
 
 for k in range(1,6):
     print(('<<<<<<<<<<<<<<<< ' + str(k) + ' >>>>>>>>>>>>>>>>'))
-    pglod = pg_rand.VcPetrovGalerkinLOD(Aold, world, k, IPatchGenerator, 1)
+    pglod = pg_pert.PerturbedPetrovGalerkinLOD(Aold, world, k, IPatchGenerator, 1)
     pglod.originCorrectors(clearFineQuantities=False)
     
     #new Coefficient
@@ -111,7 +111,7 @@ for k in range(1,6):
     Anew = coef.coefficientFine(NWorldCoarse, NCoarseElement, ANew)
     
     # tolerance = 0
-    vis, eps = pglod.updateCorrectors(Anew, 0, f, 1,clearFineQuantities=False, Computing = False)
+    vis, eps = pglod.updateCorrectors(Anew, 0,clearFineQuantities=False, Computing = False)
     
     elemente = np.arange(np.prod(NWorldCoarse))
     

@@ -7,9 +7,9 @@ import numpy as np
 import scipy.sparse as sparse
 
 import matplotlib.pyplot as plt
-from gridlod import util, world, fem, coef, interp
+from gridlod import util, world, fem, coef, interp, femsolver
 from gridlod.world import World
-import femsolverCoarse, buildcoef2d, pg_rand
+import pg_pert
 
 from visualize import drawCoefficient
 
@@ -28,7 +28,7 @@ def PGsolver(world, ABase, f,k):
     #Coefficient (need flatten form)
     aCoef = coef.coefficientFine(NWorldCoarse, NCoarseElement, ABase)
 
-    pglod = pg_rand.VcPetrovGalerkinLOD(aCoef, world, k, IPatchGenerator, 0)
+    pglod = pg_pert.PerturbedPetrovGalerkinLOD(aCoef, world, k, IPatchGenerator, 0)
     pglod.originCorrectors(clearFineQuantities=False)
 
     KFull = pglod.assembleMsStiffnessMatrix()                                    
@@ -174,17 +174,14 @@ for N in NList:
 
     NCoarseElement = NFine//NWorldCoarse
     world = World(NWorldCoarse, NCoarseElement, boundaryConditions)
-    AFine = fem.assemblePatchMatrix(NFine, world.ALocFine, aFine)
-    
+
     #grid nodes
     xpCoarse = util.pCoordinates(NWorldCoarse).flatten()
     NpCoarse = np.prod(NWorldCoarse+1)
-    f = np.ones(NpCoarse)
-    uCoarseFull = femsolverCoarse.solveCoarse_fem(world, aFine, f, boundaryConditions)
+    f = np.ones(NpFine)
+    uFineFull, AFine, _ = femsolver.solveFine(world, aFine, f, None, boundaryConditions)
     
-    basis = fem.assembleProlongationMatrix(NWorldCoarse, NCoarseElement)
-    uLodCoarse = basis*uCoarseFull
-    newErrorFine.append(np.sqrt(np.dot(uSol - uLodCoarse, AFine*(uSol - uLodCoarse))))
+    newErrorFine.append(np.sqrt(np.dot(uSol - uFineFull, AFine*(uSol - uFineFull))))
     x.append(N)
     y.append(1./N)
 

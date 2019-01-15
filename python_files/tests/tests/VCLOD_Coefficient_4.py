@@ -11,7 +11,7 @@ from visualize import drawCoefficient
 from data import * 
 
 from gridlod import interp, coef, util, fem, femsolver
-import pg_rand, buildcoef2d
+import pg_pert, buildcoef2d
 from gridlod.world import World
 
 def result(pglod, world, A, R, f, k, String):
@@ -59,7 +59,7 @@ def result(pglod, world, A, R, f, k, String):
     errorworst = np.sqrt(np.dot(uFineFem - uLodFineWorst, AFine*(uFineFem - uLodFineWorst)))
     
     # tolerance = 0 
-    vis, eps = pglod.updateCorrectors(Anew, 0, f, 1, clearFineQuantities=False, Computing=False)
+    vis, eps = pglod.updateCorrectors(Anew, 0, clearFineQuantities=False, Computing=False)
     
     PotentialCorrectors = np.sum(vis)
     elemente = np.arange(np.prod(NWorldCoarse))
@@ -91,7 +91,7 @@ def result(pglod, world, A, R, f, k, String):
     for k in range(leng-1,-1,-1):
         tol = ToleranceListcomplete[k]
         print(" --- "+ str(-k+leng) + "/" + str(leng)+ " --- Tolerance: " + str(round(tol,5)) + " in "+ String +" ---- ", end=' ') 
-        vistol = pglod.updateCorrectors(Anew, tol, f, clearFineQuantities=False, Testing=True)
+        vistol, _ = pglod.updateCorrectors(Anew, tol, clearFineQuantities=False, Testing=True)
         
         Correctors += np.sum(vistol)
         
@@ -296,7 +296,7 @@ IPatchGenerator = lambda i, N: interp.L2ProjectionPatchMatrix(i, N, NWorldCoarse
 ABase = A.flatten()
 Aold = coef.coefficientFine(NWorldCoarse, NCoarseElement, ABase)
 
-pglod = pg_rand.VcPetrovGalerkinLOD(Aold, world, k, IPatchGenerator, 0)
+pglod = pg_pert.PerturbedPetrovGalerkinLOD(Aold, world, k, IPatchGenerator, 0)
 pglod.originCorrectors(clearFineQuantities=False)
 
 vis, eps, PotentialUpdated, recomputefractionsafe, errorplotinfo, errorworst, errorbest = result(pglod ,world, A, C1, f, k, 'Specific value change' + str(value1))

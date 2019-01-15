@@ -3,18 +3,11 @@
 # Copyright holder: Tim Keil 
 # License: BSD 2-Clause License (http://opensource.org/licenses/BSD-2-Clause)
 
-import os
-import sys
-import numpy as np
-
-import matplotlib.pyplot as plt
 from visualize import *
 from data import *
-from mpl_toolkits.mplot3d.axes3d import Axes3D, get_test_data
-from matplotlib import cm
-from mpl_toolkits.mplot3d import Axes3D
-from matplotlib.ticker import LinearLocator, FormatStrFormatter, MultipleLocator
-import csv
+
+from matplotlib.ticker import FormatStrFormatter
+
 
 ploti = []
 ploti.append(0)
