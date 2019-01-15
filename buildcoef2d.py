@@ -895,7 +895,7 @@ class Coefficient2d:
                         thick = int(S[shapecounter][2])
                         
                         ratiocur = random.sample(ratioList,1)[0]
-                        decide = random.sample(decision,1)[0]
+                        decide = random.sample(list(decision),1)[0]
                         
                         if zuf1 == 1:
                             A, C = self.ValueChangeRight(A, C, i, j, ChangeRight, decide, decision, ShapeWave, ratioList, ratiocur, val, Len, thick)
@@ -922,7 +922,7 @@ class Coefficient2d:
             for i in range(0,NWorldFine[0]):
                 for j in range(0,NWorldFine[1]):
                     if A[i][j]==1:
-                        if random.sample(decision,1)[0] == 1:
+                        if random.sample(list(decision),1)[0] == 1:
                             C[i][j] += random.sample(ratioList,1)[0] * val 
         
         self.RandomMatrix = C                
@@ -939,7 +939,7 @@ class Coefficient2d:
                     for l in range(0,inv*thick,inv):
                         #change it
                         if ShapeWave: 
-                            if random.sample(decision,1)[0] == 1:
+                            if random.sample(list(decision),1)[0] == 1:
                                 C[i+l][j+k] += random.sample(ratioList,1)[0] * val
                         else:
                             C[i+l][j+k] += ratiocur * val
@@ -954,7 +954,7 @@ class Coefficient2d:
                 if decide == 1:
                     for l in range(0,inv*(thick+1),inv):
                         if ShapeWave: 
-                            if random.sample(decision,1)[0] == 1:
+                            if random.sample(list(decision),1)[0] == 1:
                                 C[i+l+k][j+k] += random.sample(ratioList,1)[0] * val
                         else:
                             C[i+l+k][j+k] += ratiocur * val
@@ -969,7 +969,7 @@ class Coefficient2d:
                 if decide == 1:
                     for l in range(0,inv*(thick+1),inv):
                         if ShapeWave: 
-                            if random.sample(decision,1)[0] == 1:
+                            if random.sample(list(decision),1)[0] == 1:
                                 C[i+k][j+k+l] += random.sample(ratioList,1)[0] * val
                         else:
                             C[i+k][j+k+l] += ratiocur * val
@@ -984,7 +984,7 @@ class Coefficient2d:
                 if decide == 1:
                     for l in range(0,inv*thick,inv):
                         if ShapeWave: 
-                            if random.sample(decision,1)[0] == 1:
+                            if random.sample(list(decision),1)[0] == 1:
                                 C[i+k][j+l] += random.sample(ratioList,1)[0] * val
                         else:
                             C[i+k][j+l] += ratiocur * val
@@ -1000,7 +1000,7 @@ class Coefficient2d:
                 if decide == 1:
                     for l in range(0,inv*(thick+1),inv):
                         if ShapeWave: 
-                            if random.sample(decision,1)[0] == 1:
+                            if random.sample(list(decision),1)[0] == 1:
                                 C[i+l+k][j-k] += random.sample(ratioList,1)[0] * val
                         else:
                             C[i+l+k][j-k] += ratiocur * val
@@ -1017,7 +1017,7 @@ class Coefficient2d:
                 if decide == 1:
                     for l in range(0,inv*(thick+1),inv):
                         if ShapeWave: 
-                            if random.sample(decision,1)[0] == 1:
+                            if random.sample(list(decision),1)[0] == 1:
                                 C[i+k][j-k+l] += random.sample(ratioList,1)[0] * val
                         else:
                             C[i+k][j-k+l] += ratiocur * val
@@ -1246,7 +1246,7 @@ class Coefficient2d:
                     Len = int(S[shapecounter][1])
                     thick = int(S[shapecounter][2])
                     
-                    vanish = random.sample(decision,1)[0]
+                    vanish = random.sample(list(decision),1)[0]
                     
                     #initial diecounter
                     died = 0
@@ -1289,7 +1289,7 @@ class Coefficient2d:
                 for l in range(0,inv*thick,inv):
                     #change it
                     if PartlyVanish:
-                        C[i+l][j+k] = random.sample(decision,1)[0]
+                        C[i+l][j+k] = random.sample(list(decision),1)[0]
                     else:
                         C[i+l][j+k] = vanish
                         died = vanish
@@ -1305,7 +1305,7 @@ class Coefficient2d:
             if Change:
                 for l in range(0,inv*(thick+1),inv):
                     if PartlyVanish:
-                        C[i+l+k][j+k] = random.sample(decision,1)[0]
+                        C[i+l+k][j+k] = random.sample(list(decision),1)[0]
                     else:
                         C[i+l+k][j+k] = vanish
                         died = vanish
@@ -1319,7 +1319,7 @@ class Coefficient2d:
             if Change:
                 for l in range(0,inv*(thick+1),inv):
                     if PartlyVanish:
-                        C[i+k][j+k+l] = random.sample(decision,1)[0]
+                        C[i+k][j+k+l] = random.sample(list(decision),1)[0]
                     else:
                         C[i+k][j+k+l] = vanish
                         died = vanish
@@ -1334,7 +1334,7 @@ class Coefficient2d:
             if Change:
                 for l in range(0,inv*thick,inv):
                     if PartlyVanish:
-                        C[i+k][j+l] = random.sample(decision,1)[0]
+                        C[i+k][j+l] = random.sample(list(decision),1)[0]
                     else:
                         C[i+k][j+l] = vanish
                         died = vanish
@@ -1350,7 +1350,7 @@ class Coefficient2d:
             if Change:
                 for l in range(0,inv*(thick+1),inv):
                     if PartlyVanish:
-                        C[i+l+k][j-k] = random.sample(decision,1)[0]
+                        C[i+l+k][j-k] = random.sample(list(decision),1)[0]
                     else:
                         C[i+l+k][j-k] = vanish
                         died = vanish
@@ -1366,7 +1366,7 @@ class Coefficient2d:
             if Change:
                 for l in range(0,inv*(thick+1),inv):
                     if PartlyVanish:
-                        C[i+k][j-k+l] = random.sample(decision,1)[0]
+                        C[i+k][j-k+l] = random.sample(list(decision),1)[0]
                     else:
                         C[i+k][j-k+l] = vanish
                         died = vanish
@@ -1602,7 +1602,7 @@ class Coefficient2d:
                     Len = int(S[shapecounter][1])
                     thick = int(S[shapecounter][2])
                     
-                    move = random.sample(decision,1)[0]
+                    move = random.sample(list(decision),1)[0]
                     step = random.sample(stepList,1)[0]
                     direction = random.sample(MoveList,1)[0]
                     
@@ -2248,7 +2248,7 @@ class Coefficient2d:
                     else:
                         continue
                     
-                    if random.sample(decision,1)[0] == 0:
+                    if random.sample(list(decision),1)[0] == 0:
                         continue
                         
                     if direction == 1:
@@ -2492,7 +2492,7 @@ class Coefficient2d:
                     else:
                         continue
                     
-                    if random.sample(decision,1)[0] == 0:
+                    if random.sample(list(decision),1)[0] == 0:
                         continue
                         
                     if direction == 1:

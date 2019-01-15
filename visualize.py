@@ -193,7 +193,7 @@ def d3plotter(N, s, String='FinescaleSolution', boundary=None, zmax=None, zmin=N
     if zmin is not None:
         ax.set_zlim(zmin,zmax)
     ax.axis('off')
-    ax.grid('off')
+    ax.grid(False)
     fig.subplots_adjust(left=0.00,bottom=0.00,right=1,top=1,wspace=0.2,hspace=0.2)
 
 def drawPatches(N, a, fig, ax, te):

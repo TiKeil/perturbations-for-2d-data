@@ -1,5 +1,5 @@
 # This file is part of the master thesis "Variational crimes in the Localized orthogonal decomposition method":
-#   https://github.com/TiKeil/Masterthesis-LOD.git
+#   https://github.com/TiKeil/MasterthesisLOD.git
 # Copyright holder: Tim Keil 
 # License: BSD 2-Clause License (http://opensource.org/licenses/BSD-2-Clause)
 # This file is motivated by gridlod: https://github.com/TiKeil/gridlod.git
@@ -11,10 +11,9 @@ import scipy.sparse as sparse
 from gridlod import lod, util, fem, ecworker, eccontroller
 import timeit
 
-class VcPetrovGalerkinLOD:
+class PerturbedPetrovGalerkinLOD:
     def __init__(self, origincoef, world, k, IPatchGenerator, printLevel=0):
         self.world = world
-        NtCoarse = np.prod(world.NWorldCoarse)
         self.k = k
         self.IPatchGenerator = IPatchGenerator
         self.printLevel = printLevel
@@ -22,14 +21,10 @@ class VcPetrovGalerkinLOD:
         self.epsilonList = None
         self.ageList = None
         
-        #origin correctors and rhs correctors
         self.ecList = None
         self.ecListtesting = None
         self.ecListOrigin = None
-        self.rhsCList = None
-        self.rhsCListOrigin = None
         self.Kms = None
-        self.Rms = None
         self.K = None
         self.basisCorrectors = None
         
@@ -47,8 +42,6 @@ class VcPetrovGalerkinLOD:
         coefficient = self.origincoef
         
         NtCoarse = np.prod(world.NWorldCoarse)
-
-        saddleSolver = lod.schurComplementSolver(world.NWorldCoarse*world.NCoarseElement)
 
         # Reset all caches
         self.Kms = None
@@ -68,9 +61,6 @@ class VcPetrovGalerkinLOD:
         ecComputeList = []
                 
         for TInd in range(NtCoarse):
-            #TInd is one coarse element    
-            
-            #mapper
             iElement = util.convertpLinearIndexToCoordIndex(world.NWorldCoarse-1, TInd)
                 
             ecComputeList.append((TInd, iElement))    
@@ -87,65 +77,13 @@ class VcPetrovGalerkinLOD:
 
     def CorrectorsToOrigin(self):
         self.ecListtesting = self.ecListOrigin
-    
-    def originRhsCorrectors(self, clearFineQuantities=True):
-        '''
-        todo update to ecworkers
-        '''
-        
-        world = self.world
-        k = self.k
-        IPatchGenerator = self.IPatchGenerator
-        coefficient = self.origincoef
-        
-        NtCoarse = np.prod(world.NWorldCoarse)
-
-        saddleSolver = lod.schurComplementSolver(world.NWorldCoarse*world.NCoarseElement)
-    
-        # Reset all caches take care
-        # self.Rms = None
-        # self.R = None
-        # self.basisCorrectors = None
-        
-        self.rhsCListOrigin = [None]*NtCoarse
-        
-        #element corrector list has coarse element size 
-        rhsCListOrigin = self.rhsCListOrigin     
-                
-        for TInd in range(NtCoarse):
-            #TInd is one coarse element    
-            iElement = util.convertpIndexToCoordinate(world.NWorldCoarse-1, TInd)
             
-            if rhsCListOrigin[TInd] is not None:
-                rhsCT = rhsCListOrigin[TInd]
-                if hasattr(coefficient, 'rCoarse'):
-                    coefficientPatch = coefficient.localize(rhsCT.iPatchWorldCoarse, rhsCT.NPatchCoarse)
-                elif hasattr(rhsCT, 'fsi'):
-                    coefficientPatch = coefficient.localize(rhsCT.iPatchWorldCoarse, rhsCT.NPatchCoarse)
-                else:
-                    coefficientPatch = None
-            else:
-                coefficientPatch = None
-    
-            rhsCT = lod.elementCorrector(world, k, iElement, saddleSolver)
-            
-            if coefficientPatch is None:
-                coefficientPatch = coefficient.localize(rhsCT.iPatchWorldCoarse, rhsCT.NPatchCoarse)
-            IPatch = IPatchGenerator(rhsCT.iPatchWorldCoarse, rhsCT.NPatchCoarse)
-                    
-            rhsCT.computeRhsCorrectors(coefficientPatch, IPatch)
-            rhsCT.computeRhsCoarseQuantities()
-            if clearFineQuantities:
-                rhsCT.clearFineQuantities()
-            rhsCListOrigin[TInd] = rhsCT
-            
-        self.rhsCList = deepcopy(rhsCListOrigin)
-
-            
-    def updateCorrectors(self, coefficient, epsilonTol, f, epsilonQuestion =0, clearFineQuantities=True, Testing = None, Computing= True, mc=0, new_correctors = False, runtime=False):
+    def updateCorrectors(self, coefficient, epsilonTol, clearFineQuantities=True,
+                         Testing = None, Computing= True, mc=0, new_correctors = False, runtime=False):
         assert(self.ecListOrigin is not None)
-        #if epsilonTol == 0 and Computing == True and mc==0:
-            #self.printLevel = 2
+
+        # Note: most of the optional arguments of this function are used for purposes of the Masterthesis.
+        # it became quite much and unsorted.
 
         start = timeit.default_timer()
 
@@ -155,20 +93,16 @@ class VcPetrovGalerkinLOD:
         
         NtCoarse = np.prod(world.NWorldCoarse)
 
-        saddleSolver = lod.schurComplementSolver(world.NWorldCoarse*world.NCoarseElement)
-        
         # Reset all caches
         self.Kms = None
         self.K = None
         self.basisCorrectors = None
                 
-        
         self.ageList = [0]*NtCoarse
         
         if self.epsilonList == None:
             self.epsilonList = [np.nan]*NtCoarse
 
-        #element corrector list has coarse element size
         if Testing:
             ecListOrigin = self.ecListtesting
         else:
@@ -185,7 +119,7 @@ class VcPetrovGalerkinLOD:
         if self.printLevel >= 2:
             print('Done')
         
-        #only for coarse coefficient
+        #For coarse coefficient
         if self.ecList is not None and hasattr(coefficient, 'rCoarse'):
             ANew = coefficient._aBase
             AOld = deepcopy(self.origincoef.aFine)
@@ -193,9 +127,9 @@ class VcPetrovGalerkinLOD:
                 delta = np.abs((AOld-ANew)/np.sqrt(AOld*ANew))
             else:
                 delta = np.abs((AOld-ANew) * np.linalg.inv(np.sqrt(AOld)) )
+                # This here is failing because of division by zero:
                 # delta = np.abs((AOld - ANew) * np.linalg.inv(np.sqrt(AOld)) * np.linalg.inv(np.sqrt(ANew)))
 
-        # saves the age of the corrector and error indicator for element
         ageList = self.ageList
         
         if epsilonTol == 0:
@@ -275,49 +209,10 @@ class VcPetrovGalerkinLOD:
         ageListinv = np.ones(np.size(ageList))
         ageListinv = ageListinv - ageList
         
-        if epsilonQuestion == 0:
-            if runtime:
-                return ageListinv, time_to_compute
-            else:
-                return ageListinv
-
-        if epsilonQuestion == 1:
+        if runtime:
+            return ageListinv, time_to_compute
+        else:
             return ageListinv, epsilonList
-
-    def ErrorIndicator(self, coefficient):
-        assert(self.ecListOrigin is not None)
-        
-        world = self.world
-        k = self.k
-        IPatchGenerator = self.IPatchGenerator
-        
-        NtCoarse = np.prod(world.NWorldCoarse)
-
-        saddleSolver = lod.schurComplementSolver(world.NWorldCoarse*world.NCoarseElement)
-                
-        self.epsilonList = [np.nan]*NtCoarse
-        
-        #element corrector list has coarse element size 
-        ecListOrigin = self.ecListOrigin
-        ecList = deepcopy(ecListOrigin)     
-                
-        epsilonList = self.epsilonList
-        
-        for TInd in range(NtCoarse):
-            #TInd is one coarse element
-            iElement = util.convertpIndexToCoordinate(world.NWorldCoarse-1, TInd)
-            
-            ecT = ecListOrigin[TInd]
-            if hasattr(coefficient, 'rCoarse'):
-                coefficientPatch = coefficient.localize(ecT.iPatchWorldCoarse, ecT.NPatchCoarse)
-                epsilonT = ecListOrigin[TInd].computeTimsCoarseErrorIndicator(delta,ceta)
-            elif hasattr(ecT, 'fsi'):
-                coefficientPatch = coefficient.localize(ecT.iPatchWorldCoarse, ecT.NPatchCoarse)
-                epsilonT = ecListOrigin[TInd].computeErrorIndicatorFine(coefficientPatch)
-
-            epsilonList[TInd] = epsilonT
-            
-        return epsilonList        
 
     def clearCorrectors(self):
         NtCoarse = np.prod(self.world.NWorldCoarse)
@@ -511,47 +406,6 @@ class VcPetrovGalerkinLOD:
 
         self.Kms = Kms
         return Kms
-        
-    def assembleMsRhsMatrix(self):
-        if self.Rms is not None:
-            return self.Rms
-
-        assert(self.rhsCList is not None)
-
-        world = self.world
-        NWorldCoarse = world.NWorldCoarse
-        
-        NtCoarse = np.prod(world.NWorldCoarse)
-        NpCoarse = np.prod(world.NWorldCoarse+1)
-        
-        TpIndexMap = util.lowerLeftpIndexMap(np.ones_like(NWorldCoarse), NWorldCoarse)
-        TpStartIndices = util.lowerLeftpIndexMap(NWorldCoarse-1, NWorldCoarse)
-
-        cols = []
-        rows = []
-        data = []
-        ecList = self.rhsCList
-        for TInd in range(NtCoarse):
-            ecT = ecList[TInd]
-            assert(ecT is not None)
-
-            NPatchCoarse = ecT.NPatchCoarse
-
-            patchpIndexMap = util.lowerLeftpIndexMap(NPatchCoarse, NWorldCoarse)
-            patchpStartIndex = util.convertpCoordinateToIndex(NWorldCoarse, ecT.iPatchWorldCoarse)
-            
-            colsT = TpStartIndices[TInd] + TpIndexMap
-            rowsT = patchpStartIndex + patchpIndexMap
-            dataT = ecT.csi.Rmsij.flatten()
-
-            cols.extend(np.tile(colsT, np.size(rowsT)))
-            rows.extend(np.repeat(rowsT, np.size(colsT)))
-            data.extend(dataT)
-
-        Rms = sparse.csc_matrix((data, (rows, cols)), shape=(NpCoarse, NpCoarse))
-
-        self.Rms = Rms
-        return Rms
 
 
     def assembleStiffnessMatrix(self):
