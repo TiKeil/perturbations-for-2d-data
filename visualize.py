@@ -265,20 +265,26 @@ def AllshapesSixdrawCoefficient(N, a, b, c , d, e, f):
                cmap=cm.plasma)
     plt.axis('off')
 
-def drawCoefficientGrid(N, a, fig, ax, Greys=False):
-    aCube = a.reshape(N)  
+def drawCoefficientGrid(N, a, fig, ax, Greys=False, original_style = False):
+    aCube = a.reshape(N, order ='F')
+    aCube = np.ascontiguousarray(aCube.T)
+
     te = 16
     major_ticks = np.arange(0, te, 1)
     if Greys:
-        ax.imshow(aCube, cmap='Greys', extent=[0, te, 0, te])
+        im  = ax.imshow(aCube, cmap='Greys', extent=[0, te, 0, te])
     else:
-        ax.imshow(aCube, cmap=cm.Blues, extent=[0, te, 0, te])
+        if original_style:
+            im = ax.imshow(aCube, cmap=cm.Blues, origin='lower', extent=[0, te, 0, te])
+        else:
+            im = ax.imshow(aCube, cmap=cm.Blues, extent=[0, te, 0, te])
     ax.axis([0, te, 0, te])
     ax.set_xticks(major_ticks)                                                       
     ax.set_yticks(major_ticks)                                                       
     ax.tick_params(axis='both', which='both', bottom=False, top=False, labelbottom=False, right=False, left=False, labelleft=False)
     ax.grid(which='both')                                                            
-    ax.grid(which='major', linestyle="-", color="grey")                                                
+    ax.grid(which='major', linestyle="-", color="grey")
+    fig.colorbar(im)
 
 def drawCoefficientwg(N, a, fig, ax, Greys=False):
     aCube = a.reshape(N) 
