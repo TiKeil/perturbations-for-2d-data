@@ -121,14 +121,12 @@ class PerturbedPetrovGalerkinLOD:
         
         #For coarse coefficient
         if self.ecList is not None and hasattr(coefficient, 'rCoarse'):
-            ANew = coefficient._aBase
+            ANew = coefficient.aFine
             AOld = deepcopy(self.origincoef.aFine)
             if ANew.ndim == 1:
                 delta = np.abs((AOld-ANew)/np.sqrt(AOld*ANew))
             else:
-                delta = np.abs((AOld-ANew) * np.linalg.inv(np.sqrt(AOld)) )
-                # This here is failing because of division by zero:
-                # delta = np.abs((AOld - ANew) * np.linalg.inv(np.sqrt(AOld)) * np.linalg.inv(np.sqrt(ANew)))
+                delta = np.abs((AOld - ANew) * np.linalg.inv(np.sqrt(AOld)) * np.linalg.inv(np.sqrt(ANew)))
 
         ageList = self.ageList
         
@@ -445,4 +443,27 @@ class PerturbedPetrovGalerkinLOD:
 
         self.K = K
         return K
-    
+
+    def solve(self, f):
+        world = self.world
+        KFull = self.assembleMsStiffnessMatrix()
+        MFull = fem.assemblePatchMatrix(world.NWorldFine, world.MLocFine)
+        free = util.interiorpIndexMap(world.NWorldCoarse)
+        basis = fem.assembleProlongationMatrix(world.NWorldCoarse, world.NCoarseElement)
+
+        bFull = MFull * f
+        bFull = basis.T * bFull
+        KFree = KFull[free][:, free]
+        bFree = bFull[free]
+
+        xFree = sparse.linalg.spsolve(KFree, bFree)
+        basisCorrectors = self.assembleBasisCorrectors()
+        modifiedBasis = basis - basisCorrectors
+
+        NpCoarse = np.prod(world.NWorldCoarse + 1)
+        xFull = np.zeros(NpCoarse)
+        xFull[free] = xFree
+        uLodCoarse = xFull
+        uLodFine = modifiedBasis * xFull
+
+        return uLodFine, uLodCoarse, basis
