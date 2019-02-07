@@ -8,11 +8,12 @@ import numpy as np
 from copy import deepcopy
 import scipy.sparse as sparse
 
+import ipyparallel as ipp
 from gridlod import lod, util, fem, ecworker, eccontroller
 import timeit
 
 class PerturbedPetrovGalerkinLOD:
-    def __init__(self, origincoef, world, k, IPatchGenerator, printLevel=0):
+    def __init__(self, origincoef, world, k, IPatchGenerator, printLevel=0, localCluster=False, slurmCluster=False):
         self.world = world
         self.k = k
         self.IPatchGenerator = IPatchGenerator
@@ -27,13 +28,17 @@ class PerturbedPetrovGalerkinLOD:
         self.Kms = None
         self.K = None
         self.basisCorrectors = None
-        
+
         #for testing
         self.currentTestingCorrector = None
         #coefficient without defects
         self.origincoef = origincoef
         
         eccontroller.clearWorkers()
+        if slurmCluster:
+            eccontroller.setupClient(ipp.Client(profile='slurm'))
+        if localCluster:
+            eccontroller.setupClient(ipp.Client(sshserver='local'))
         
     def originCorrectors(self, clearFineQuantities=True):
         world = self.world
