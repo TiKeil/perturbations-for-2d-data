@@ -29,13 +29,13 @@ def drawCoefficient(N, a, greys=False, normalize=None, cmap_default = False, col
 
     if normalize is None:
         plt.imshow(aCube,
-                   origin='upper',
+                   origin='lower_left',
                    interpolation='none',
                    cmap=cmap)
 
     else:
         plt.imshow(aCube,
-                   origin='upper',
+                   origin='lower_left',
                    interpolation='none',
                    cmap=cmap,
                    vmin=normalize[0],
