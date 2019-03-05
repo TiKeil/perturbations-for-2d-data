@@ -18,11 +18,11 @@ bg = 0.05  # background
 val = 1  # values
 
 # fine World
-NWorldFine = np.array([128, 128])
+NWorldFine = np.array([256, 256])
 NpFine = np.prod(NWorldFine + 1)
 
 # coarse World
-NWorldCoarse = np.array([8, 8])
+NWorldCoarse = np.array([16, 16])
 NpCoarse = np.prod(NWorldCoarse + 1)
 
 # ratio between Fine and Coarse
@@ -61,7 +61,7 @@ ABase = A.flatten()
 plt.figure("OriginalCoefficient")
 drawCoefficient(NWorldFine, ABase)
 
-numbers = [8, 34, 37]
+numbers = [2,70,97,153,205]
 
 D = CoefClass.SpecificVanish(Number=numbers,
                              probfactor=1,
@@ -109,8 +109,8 @@ epsFine, epsCoarse = zip(*map(computeIndicators, range(world.NtCoarse)))
 
 elemente = np.arange(np.prod(NWorldCoarse))
 plt.figure("Error indicators")
-#plt.plot(elemente, epsFine, label="Fine")
-plt.plot(elemente, epsCoarse, label="Coarse")
+plt.plot(elemente, epsFine, label="Fine")
+#plt.plot(elemente, epsCoarse, label="Coarse")
 plt.ylabel('$e_{u,T}$')
 plt.xlabel('Element')
 plt.subplots_adjust(left=0.09, bottom=0.09, right=0.99, top=0.99, wspace=0.2, hspace=0.2)
