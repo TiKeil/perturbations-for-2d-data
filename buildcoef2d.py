@@ -8,8 +8,8 @@ import numpy as np
 import random
 
 """
-Note: This file contains a lot of nonsense code, mostly deprecated from fewer experiments. For usability please have 
-a look at the buildcoef2d_howto or at the generate_figures files in https://github.com/TiKeil/MasterthesisLOD.git 
+For usability please have a look at the generate_figures files in https://github.com/TiKeil/MasterthesisLOD.git . 
+A how to is coming soon
 """
 
 class Coefficient2d:
@@ -41,9 +41,11 @@ class Coefficient2d:
         2dCoefficient   
         '''
 
+        self.actual_bg = bg
+        self.actual_val = val
         self.NWorldFine = NWorldFine 
-        self.bg = bg 
-        self.val = val 
+        self.bg = 0.01
+        self.val = 1
         
         #basic properties
         self.length = length 
@@ -145,8 +147,7 @@ class Coefficient2d:
         
         return 0
         
-        ########################### IndexSearch ###################################
-
+    ########################### IndexSearch ###################################
     def SearchShapeIndex(self, Shape, LengthPosition, ThickPosition):
         if Shape == 1:
             px = ThickPosition
@@ -173,9 +174,8 @@ class Coefficient2d:
             py = -LengthPosition+ThickPosition
         
         return px, py            
-    
-        
-        ############### BUILD FUNCTION #################    
+
+
     def BuildCoefficient(self):
         #random seed
         random.seed(20)
@@ -447,11 +447,22 @@ class Coefficient2d:
         self.ShapeRemember = S
         self.ShapeRememberOriginal = S
         self.RandomMatrix = B
-        return B
+
+        Ret = np.copy(B)
+        for i in range(0,NWorldFine[0]):
+            for j in range(0,NWorldFine[1]):
+                if Ret[i][j] == self.bg:
+                    Ret[i][j] = self.actual_bg
+                if Ret[i][j] == self.val:
+                    Ret[i][j] = self.actual_val
+
+
+        return Ret
         
         
         ########################### investigation ##################################
-    
+
+    ######## check whether the new shape can be placed here
     def InvestigateRight(self, A, i, j, Len, thick, b, c, inv = 1, Channel=None):
         if Channel:
             b1 = b
@@ -488,7 +499,6 @@ class Coefficient2d:
             result = 0
         return result
                 
-    
     def InvestigateDiagr2(self, A, i, j, Len, thick, b, c, inv = 1):
         NWorldFine = self.NWorldFine
         result = 1
@@ -524,7 +534,6 @@ class Coefficient2d:
             result = 0
         return result
         
-        
     def InvestigateDiagl1(self, A, i, j, Len, thick, b, c, inv = 1):
         NWorldFine = self.NWorldFine
         result = 1
@@ -538,8 +547,7 @@ class Coefficient2d:
         else:
             result = 0
         return result
-                
-        
+
     def InvestigateDiagl2(self, A, i, j, Len, thick, b, c, inv = 1):
         NWorldFine = self.NWorldFine
         result = 1
@@ -591,7 +599,8 @@ class Coefficient2d:
 
          
          ################################# Build #########################################
- 
+
+    ######## place the new shape here #########
     def BuildRight(self, A, B, i, j, val, bg, Len, thick, space, inv = 1):
         NWorldFine = self.NWorldFine
         for k in range(0,int(inv*Len),inv):
@@ -812,122 +821,7 @@ class Coefficient2d:
 
     ################################# RANDOM ##############################################
 
-    ################# Value Change ##############################
-    
-    
-    def RandomValueChange(self, 
-                    ratio=0.1, 
-                    probfactor=1, 
-                    randomvalue=None, 
-                    negative=None, 
-                    ShapeRestriction=True,
-                    ShapeWave=None,
-                    ChangeRight=1, 
-                    ChangeDown=1, 
-                    ChangeDiagr1=1, 
-                    ChangeDiagr2=1, 
-                    ChangeDiagl1=1, 
-                    ChangeDiagl2=1,
-                    Original = True,
-                    NewShapeChange=True):
-        #Changes Value randomly or certainly
-        '''
-        Ratio = amount of defect :    0.1 = 10 %  of the reference value 
-        probfactor = defines the percentage of the possibility of the defect.   1 = 100% , 20 = 5%     maybe change this
-        randomvalue = if true then a intervall of ratios is required
-        negative = if true also negative defects are allowed
-        '''
-        #remember stuff
-        assert(self.ShapeRemember is not None)
-        assert(self.RandomMatrix is not None)
-        NWorldFine = self.NWorldFine
-        val = self.val
-        
-        C = self.RandomMatrix.copy()
-        S = self.ShapeRemember.copy()
-        
-        if Original:
-            C = self.Matrix.copy()
-            S = self.ShapeRememberOriginal.copy()
-        
-        A = self.Matrix.copy()
-        #ratio
-        ratioList = [ratio]
-        if randomvalue is not None:
-            ratioList = randomvalue
-        
-        #negative
-        if negative:
-            for i in range(0,np.size(ratioList)):
-                ratioList.append(-ratioList[i])
-        
-        #probability
-        if probfactor > 0:
-            decision = np.zeros(probfactor)    
-            decision[0] = 1
-        
-        if probfactor < 0:
-            decision = np.ones(probfactor)    
-            decision[0] = 0
-        
-        #for remember
-        shapecounter = -1
-        
-        #NEwShapeChange
-        ShapeChange = np.zeros(self.Shapes)
-        if NewShapeChange == True:
-            ShapeChange = np.ones(self.Shapes)
-        else:
-            for shape in range(0,int(self.Shapes)):
-                if NewShapeChange[shape] == 0:
-                    ShapeChange[shape] = 0 
-                
-        
-        if ShapeRestriction:
-            for i in range(0,NWorldFine[0]):
-                for j in range(0,NWorldFine[1]):
-                    if A[i][j]!=self.bg:
-                        shapecounter += 1
-                        #find the right shape
-                        #regain the shape length and thicknes
-                        zuf1 = int(S[shapecounter][0])
-                        Len = int(S[shapecounter][1])
-                        thick = int(S[shapecounter][2])
-                        
-                        ratiocur = random.sample(ratioList,1)[0]
-                        decide = random.sample(list(decision),1)[0]
-                        
-                        if zuf1 == 1:
-                            A, C = self.ValueChangeRight(A, C, i, j, ChangeRight, decide, decision, ShapeWave, ratioList, ratiocur, val, Len, thick)
-                        elif zuf1 == 2:
-                            A, C = self.ValueChangeDiagr1(A, C, i, j, ChangeDiagr1, decide, decision, ShapeWave, ratioList, ratiocur, val, Len, thick)
-                        elif zuf1 == 3:
-                            A, C = self.ValueChangeDiagr2(A, C, i, j, ChangeDiagr2, decide, decision, ShapeWave, ratioList, ratiocur, val, Len, thick)
-                        elif zuf1 == 4:
-                            A, C = self.ValueChangeDown(A, C, i, j, ChangeDown, decide, decision, ShapeWave, ratioList, ratiocur, val, Len, thick)
-                        elif zuf1 == 5:
-                            A, C = self.ValueChangeDiagl1(A, C, i, j, ChangeDiagl1, decide, decision, ShapeWave, ratioList, ratiocur, val, Len, thick)
-                        elif zuf1 == 6:
-                            A, C = self.ValueChangeDiagl2(A, C, i, j, ChangeDiagl2, decide, decision, ShapeWave, ratioList, ratiocur, val, Len, thick)
-                        
-                        for s in range(0,self.Shapes):
-                            #rebuildMatrix
-                            if zuf1 == 7+s:
-                                NewShapeMatrix = self.ShapeMatrixes[self.ShapeIndex[s]:self.ShapeIndex[s+1]]
-                                NewShapeMatrix = np.reshape(NewShapeMatrix,(int(self.ShapeSizes[s][0]),int(self.ShapeSizes[s][1])))
-                                ShapeCoords = self.ShapeCoords[self.CoordsIndex[s]:self.CoordsIndex[s+1]]
-                                A, C = self.ValueChangeNewShapes(NewShapeMatrix, ShapeCoords, A, C, i, j, ShapeChange[s], decide, decision, ShapeWave, ratioList, ratiocur, val)
-                        
-        else:
-            for i in range(0,NWorldFine[0]):
-                for j in range(0,NWorldFine[1]):
-                    if A[i][j]==1:
-                        if random.sample(list(decision),1)[0] == 1:
-                            C[i][j] += random.sample(ratioList,1)[0] * val 
-        
-        self.RandomMatrix = C                
-        return C    
-    
+    ###### Change in value ########
     def ValueChangeRight(self, A, C, i, j, Change, decide, decision, ShapeWave, ratioList, ratiocur, val, Len, thick, inv = 1):
         for k in range(0,inv*Len,inv):
             for l in range(0,inv*thick,inv):
@@ -1172,112 +1066,20 @@ class Coefficient2d:
                                 ShapeCoords = self.ShapeCoords[self.CoordsIndex[s]:self.CoordsIndex[s+1]]
                                 A, C = self.ValueChangeNewShapes(NewShapeMatrix, ShapeCoords, A, C, i, j, ShapeChange[s], decide, decision, ShapeWave, ratioList, ratiocur, val)
                     
-        self.RandomMatrix = C                
-        return C    
-            
-    ##################################### Vanish ###################################    
-                              
-    def RandomVanish(self,  
-                    probfactor=1,
-                    PartlyVanish=None, 
-                    ChangeRight=1, 
-                    ChangeDown=1, 
-                    ChangeDiagr1=1, 
-                    ChangeDiagr2=1, 
-                    ChangeDiagl1=1, 
-                    ChangeDiagl2=1,
-                    Original = True,
-                    NewShapeChange=True,
-                    RandomSeed=None):
+        self.RandomMatrix = C
 
-        if RandomSeed is not None:
-            random.seed(RandomSeed)
-        #remember stuff
-        assert(self.ShapeRememberOriginal is not None)
-        assert(self.RandomMatrix is not None)
-        NWorldFine = self.NWorldFine
-        val = self.val
-        bg = self.bg
-        
-        C = self.RandomMatrix.copy()
-        S = self.ShapeRemember.copy()
-        
-        if Original:
-            C = self.Matrix.copy()
-            S = self.ShapeRememberOriginal.copy()
-        
-        A = C.copy()
-        
-        #probability
-        if probfactor > 0:
-            decision = np.ones(probfactor) * val    
-            decision[0] = bg
-        
-        if probfactor < 0:
-            decision = np.ones(probfactor) * bg   
-            decision[0] = val
-        
-        #for remember
-        shapecounter = -1
-        
-        #NEwShapeChange
-        ShapeChange = np.zeros(self.Shapes)
-        if NewShapeChange == True:
-            ShapeChange = np.ones(self.Shapes)
-        else:
-            for shape in range(0,int(self.Shapes)):
-                if NewShapeChange[shape] == 0:
-                    ShapeChange[shape] = 0 
-        
-        
+        Ret = np.copy(C)
         for i in range(0,NWorldFine[0]):
             for j in range(0,NWorldFine[1]):
-                if A[i][j]!=bg and A[i][j]!=0:
-                    shapecounter += 1
-                    #find the right shape
-                    for s in range(shapecounter,np.shape(S)[0]):
-                        if S[s][0] == 0:
-                            shapecounter += 1
-                        else:
-                            break
-                    
-                    #regain the shape length and thicknes
-                    zuf1 = int(S[shapecounter][0])
-                    Len = int(S[shapecounter][1])
-                    thick = int(S[shapecounter][2])
-                    
-                    vanish = random.sample(list(decision),1)[0]
-                    
-                    #initial diecounter
-                    died = 0
-                    
-                    if zuf1 == 1:
-                        A, C, died = self.VanishRight(A, C, i, j, Len, thick, ChangeRight, PartlyVanish, decision, vanish)
-                    elif zuf1 == 2:
-                        A, C, died = self.VanishDiagr1(A, C, i, j, Len, thick, ChangeDiagr1 , PartlyVanish, decision, vanish)
-                    elif zuf1 == 3:
-                        A, C, died = self.VanishDiagr2(A, C, i, j, Len, thick, ChangeDiagr2 , PartlyVanish, decision, vanish)
-                    elif zuf1 == 4:
-                        A, C, died = self.VanishDown(A, C, i, j, Len, thick, ChangeDown, PartlyVanish, decision, vanish)
-                    elif zuf1 == 5:
-                        A, C, died = self.VanishDiagl1(A, C, i, j, Len, thick, ChangeDiagl1, PartlyVanish, decision, vanish)
-                    elif zuf1 == 6:
-                        A, C, died = self.VanishDiagl2(A, C, i, j, Len, thick, ChangeDiagl2, PartlyVanish, decision, vanish)
-                    
-                    for s in range(0,self.Shapes):
-                        #rebuildMatrix
-                        if zuf1 == 7+s:
-                            NewShapeMatrix = self.ShapeMatrixes[self.ShapeIndex[s]:self.ShapeIndex[s+1]]
-                            NewShapeMatrix = np.reshape(NewShapeMatrix,(int(self.ShapeSizes[s][0]),int(self.ShapeSizes[s][1])))
-                            ShapeCoords = self.ShapeCoords[self.CoordsIndex[s]:self.CoordsIndex[s+1]]
-                            A, C, died = self.VanishNewShapes(NewShapeMatrix, ShapeCoords, A, C, i, j, ShapeChange[s], PartlyVanish, decision, vanish)
-                    
-                    if died == bg:
-                        S[shapecounter][0] = 0
-                        
-        self.RandomMatrix = C           
-        return C
+                if Ret[i][j] == self.bg:
+                    Ret[i][j] = self.actual_bg
+                elif Ret[i][j] == self.val:
+                    Ret[i][j] = self.actual_val
+                else:
+                    Ret[i][j] = ratio
 
+        return Ret
+            
     def VanishRight(self, A, C, i, j, Len, thick, Change, PartlyVanish, decision, vanish, inv = 1):
         died = 0
         for k in range(0,inv*Len,inv):
@@ -1310,6 +1112,7 @@ class Coefficient2d:
                         C[i+l+k][j+k] = vanish
                         died = vanish
         return A, C, died
+
     def VanishDiagr2(self, A, C, i, j, Len, thick, Change, PartlyVanish, decision, vanish, inv = 1):
         died = 0
         for k in range(0,inv*Len,inv):
@@ -1400,7 +1203,6 @@ class Coefficient2d:
             
             
         return A,C, died
-        
 
     def SpecificVanish(self, Number = None, 
                     probfactor=1,
@@ -1506,170 +1308,17 @@ class Coefficient2d:
                         if died == bg:
                             S[shapecounter][0] = 0
                         
-        self.RandomMatrix = C           
-        return C
-
-    
-        ###################################### MOVE #############################################  
-        
-        
-    def RandomMove(self,  
-                    probfactor=1,
-                    steps=1,
-                    randomstep=None,
-                    randomDirection=None, 
-                    ChangeRight=1, 
-                    ChangeDown=1, 
-                    ChangeDiagr1=1, 
-                    ChangeDiagr2=1, 
-                    ChangeDiagl1=1, 
-                    ChangeDiagl2=1,
-                    Right=1,
-                    BottomRight=0,
-                    Bottom=0,
-                    BottomLeft=0,
-                    Left=0,
-                    TopLeft=0,
-                    Top=0,
-                    TopRight=0,
-                    Original = True,
-                    NewShapeChange = True):
-
-        #remember stuff
-        assert(self.ShapeRememberOriginal is not None)
-        assert(self.RandomMatrix is not None)
-        
-        NWorldFine = self.NWorldFine
-        val = self.val
-        bg = self.bg
-        
-        A = self.RandomMatrix.copy()
-        S = self.ShapeRemember.copy()
-        
-        if Original:
-            A = self.Matrix.copy()
-            S = self.ShapeRememberOriginal.copy()
-        
-        C = np.zeros(NWorldFine)
-        C += bg
-        
-        #probability
-        if probfactor > 0:
-            decision = np.zeros(probfactor)    
-            decision[0] = 1
-        
-        if probfactor < 0:
-            decision = np.ones(probfactor)    
-            decision[0] = 0
-        
-        #steplist
-        stepList = [steps]
-        if randomstep is not None:
-            stepList = randomstep
-        
-        MoveList = [Right*1,BottomRight*2,Bottom*3,BottomLeft*4,Left*5,TopLeft*6,Top*7,TopRight*8]
-        MoveList = list([x for x in MoveList if x!=0])
-        
-        #for remember
-        shapecounter = -1
-        
-        #initial boundaryfailcounter
-        nomore = 0
-        
-        #NEwShapeChange
-        ShapeChange = np.zeros(self.Shapes)
-        if NewShapeChange == True:
-            ShapeChange = np.ones(self.Shapes)
-        else:
-            for shape in range(0,int(self.Shapes)):
-                if NewShapeChange[shape] == 0:
-                    ShapeChange[shape] = 0 
-        
-        
+        self.RandomMatrix = C
+        Ret = np.copy(C)
         for i in range(0,NWorldFine[0]):
             for j in range(0,NWorldFine[1]):
-                if A[i][j]!=bg and A[i][j]!=0:
-                    shapecounter += 1
-                    #find the right shape
-                    #regain the shape length and thicknes
-                    for s in range(shapecounter,np.shape(S)[0]):
-                        if S[s][0] == 0:
-                            shapecounter += 1
-                        else:
-                            break
+                if Ret[i][j] == self.bg:
+                    Ret[i][j] = self.actual_bg
+                elif Ret[i][j] == self.val:
+                    Ret[i][j] = self.actual_val
 
-                    zuf1 = int(S[shapecounter][0])
-                    Len = int(S[shapecounter][1])
-                    thick = int(S[shapecounter][2])
-                    
-                    move = random.sample(list(decision),1)[0]
-                    step = random.sample(stepList,1)[0]
-                    direction = random.sample(MoveList,1)[0]
-                    
-                    if direction == 1:
-                        m1 = 0
-                        m2 = step
-                    elif direction == 2:
-                        m1 = step
-                        m2 = step
-                    elif direction == 3:
-                        m1 = step
-                        m2 = 0
-                    elif direction == 4:
-                        m1 = step
-                        m2 = -step
-                    elif direction == 5:
-                        m1 = 0
-                        m2 = -step
-                    elif direction == 6:
-                        m1 = -step
-                        m2 = -step
-                    elif direction == 7:
-                        m1 = -step
-                        m2 = 0
-                    elif direction == 8:
-                        m1 = -step
-                        m2 = step
-                    
-                    if randomDirection:
-                        for i in range(0,np.size(stepList)):
-                            stepList.append(-stepList[i])
-                        stepList.append(0)
-                        m1 = random.sample(stepList,1)[0]
-                        m2 = random.sample(stepList,1)[0]
-                    
-                    if zuf1 == 1:
-                        C = self.MoveRight(A, C, i, j, m1, m2, Len, thick, ChangeRight, move)
-                        A, nomore = self.KillingRight(A, i, j, Len, thick)
-                    elif zuf1 == 2:
-                        C = self.MoveDiagr1(A, C, i, j, m1, m2, Len, thick, ChangeDiagr1, move)
-                        A, nomore = self.KillingDiagr1(A, i, j, Len, thick)
-                    elif zuf1 == 3:
-                        C = self.MoveDiagr2(A, C, i, j, m1, m2, Len, thick, ChangeDiagr2, move)
-                        A, nomore = self.KillingDiagr2(A, i, j, Len, thick)
-                    elif zuf1 == 4:
-                        C = self.MoveDown(A, C, i, j, m1, m2, Len, thick, ChangeDown, move)
-                        A, nomore = self.KillingDown(A, i, j, Len, thick)
-                    elif zuf1 == 5:
-                        C = self.MoveDiagl1(A, C, i, j, m1, m2, Len, thick, ChangeDiagl1, move)
-                        A, nomore = self.KillingDiagl1(A, i, j, Len, thick)
-                    elif zuf1 == 6:
-                        C = self.MoveDiagl2(A, C, i, j, m1, m2, Len, thick, ChangeDiagl2, move)
-                        A, nomore = self.KillingDiagl2(A, i, j, Len, thick)
-                    
-                    for s in range(0,self.Shapes):
-                        #rebuildMatrix
-                        if zuf1 == 7+s:
-                            NewShapeMatrix = self.ShapeMatrixes[self.ShapeIndex[s]:self.ShapeIndex[s+1]]
-                            NewShapeMatrix = np.reshape(NewShapeMatrix,(int(self.ShapeSizes[s][0]),int(self.ShapeSizes[s][1])))
-                            ShapeCoords = self.ShapeCoords[self.CoordsIndex[s]:self.CoordsIndex[s+1]]
-                            A, C, died = self.MoveNewShapes(NewShapeMatrix, ShapeCoords, A, C, i, j, m1, m2, ShapeChange[s], move)
-                                                            
-        self.nomore = nomore
-        self.RandomMatrix = C           
-        return C
+        return Ret
     
-        ##### MOVE ###############      
     def MoveRight(self, A, C, i, j, m1, m2, Len, thick, Change, move, inv = 1):
         nomore = 0
         NWorldFine = self.NWorldFine
@@ -1764,6 +1413,7 @@ class Coefficient2d:
         return C
     
         ########################## Killing ######################################
+
     def KillingRight(self, A, i, j, Len, thick, inv = 1):
         nomore = 0
         NWorldFine = self.NWorldFine
@@ -2052,8 +1702,17 @@ class Coefficient2d:
                            
                     
         self.nomore = nomore
-        self.RandomMatrix = C           
-        return C
+        self.RandomMatrix = C
+
+        Ret = np.copy(C)
+        for i in range(0,NWorldFine[0]):
+            for j in range(0,NWorldFine[1]):
+                if Ret[i][j] == self.bg:
+                    Ret[i][j] = self.actual_bg
+                elif Ret[i][j] == self.val:
+                    Ret[i][j] = self.actual_val
+
+        return Ret
 
     def ChannelVerticalRandomize(self, probfactor=10,
                          LU = 1,
