@@ -8,12 +8,11 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 from gridlod import interp, coef, lod
-from gridlod.world import World, Patch
 import buildcoef2d
-from visualize import drawCoefficientGrid
+from gridlod.world import World, Patch
 
-from visualize import drawCoefficient
-
+from visualize import drawCoefficient, drawCoefficientGrid, drawCoefficientwg
+from gridlod_on_perturbations.visualization_tools import drawCoefficient_origin
 bg = 0.05  # background
 val = 1  # values
 
@@ -31,13 +30,15 @@ NCoarseElement = NWorldFine // NWorldCoarse
 boundaryConditions = np.array([[0, 0],
                                [0, 0]])
 
-print("starting and precomputing ...")
 world = World(NWorldCoarse, NCoarseElement, boundaryConditions)
+
+# righthandside
+f = np.ones(NpCoarse)
 
 # coefficient
 CoefClass = buildcoef2d.Coefficient2d(NWorldFine,
-                                      bg=bg,
-                                      val=val,
+                                      bg=0.05,
+                                      val=1,
                                       length=8,
                                       thick=8,
                                       space=8,
@@ -61,18 +62,32 @@ ABase = A.flatten()
 plt.figure("OriginalCoefficient")
 drawCoefficient(NWorldFine, ABase)
 
-numbers = [2,70,97,153,205]
+# potentially updated
+fig = plt.figure("Correcting")
+ax = fig.add_subplot(2, 3, 1)
+ax.set_title('Original', fontsize=7)
+
+drawCoefficientwg(NWorldFine, ABase, fig, ax)
+
+numbers = [2, 70, 97, 153, 205]
 
 D = CoefClass.SpecificVanish(Number=numbers,
                              probfactor=1,
                              PartlyVanish=None,
                              Original=True)
 
-Defect = D.flatten()
-plt.figure("Disappearance")
-drawCoefficient(NWorldFine, D)
+value2 = 50
+R2 = CoefClass.SpecificValueChange(ratio=value2,
+                                   Number=numbers,
+                                   probfactor=1,
+                                   randomvalue=None,
+                                   negative=None,
+                                   ShapeRestriction=True,
+                                   ShapeWave=None,
+                                   Original=True,
+                                   NewShapeChange=True)
 
-# precomputations
+# precompute
 NWorldFine = world.NWorldFine
 NWorldCoarse = world.NWorldCoarse
 NCoarseElement = world.NCoarseElement
@@ -81,11 +96,11 @@ boundaryConditions = world.boundaryConditions
 NpFine = np.prod(NWorldFine + 1)
 NpCoarse = np.prod(NWorldCoarse + 1)
 
-k = 5
-
+ANew = D.flatten()
+elemente = np.arange(np.prod(NWorldCoarse))
 
 def computeKmsij(TInd):
-    patch = Patch(world, k, TInd)
+    patch = Patch(world, TInd[1], TInd[0])
     IPatch = lambda: interp.L2ProjectionPatchMatrix(patch, boundaryConditions)
     aPatch = lambda: coef.localizeCoefficient(patch, ABase)
 
@@ -95,40 +110,42 @@ def computeKmsij(TInd):
 
 def computeIndicators(TInd):
     aPatch = lambda: coef.localizeCoefficient(patchT[TInd], ABase)
-    rPatch = lambda: coef.localizeCoefficient(patchT[TInd], Defect)
+    rPatch = lambda: coef.localizeCoefficient(patchT[TInd], ANew)
 
     epsFine = lod.computeBasisErrorIndicatorFine(patchT[TInd], correctorsListT[TInd], aPatch, rPatch)
-    epsCoarse = lod.computeErrorIndicatorCoarseFromCoefficients(patchT[TInd], csiT[TInd].muTPrime,  aPatch, rPatch)
+    epsCoarse = 0
     return epsFine, epsCoarse
 
-# Use mapper to distribute computations (mapper could be the 'map' built-in or e.g. an ipyparallel map)
-patchT, correctorsListT, KmsijT, csiT = zip(*map(computeKmsij, range(world.NtCoarse)))
 
-print('compute error indicators')
-epsFine, epsCoarse = zip(*map(computeIndicators, range(world.NtCoarse)))
+for k in range(1, 6):
+    print(('<<<<<<<<<<<<<<<< ' + str(k) + ' >>>>>>>>>>>>>>>>'))
+    patchT, correctorsListT, KmsijT, csiT = zip(*map(computeKmsij, zip(range(world.NtCoarse),np.repeat(k,world.NtCoarse))))
+    print('compute error indicators')
+    epsFine, epsCoarse = zip(*map(computeIndicators, range(world.NtCoarse)))
+    vis = np.copy(epsFine)
+    for i in range(np.size(epsFine)):
+        if epsFine[i] != 0:
+            vis[i] = 1
 
-elemente = np.arange(np.prod(NWorldCoarse))
-plt.figure("Error indicators")
-eps = np.sort(epsCoarse)
-es = []
-for i in range(0, np.size(eps)):
-    es.append(eps[np.size(eps) - i - 1])
-plt.semilogy(elemente, es)
-plt.ylabel('$e_{u,T}$')
-plt.xlabel('Element')
-plt.subplots_adjust(left=0.09, bottom=0.09, right=0.99, top=0.99, wspace=0.2, hspace=0.2)
-plt.legend(loc='upper right')  # Legende
-plt.grid()
+    fig = plt.figure("Correcting")
+    if k == 1:
+        ax = fig.add_subplot(2, 3, k + 2)
+        ax.set_title('Affected for $k=$' + str(k), fontsize=7)
+    elif k == 2:
+        ax = fig.add_subplot(2, 3, k + 2)
+        ax.set_title('Affected for $k=$' + str(k), fontsize=7)
+    elif k == 3:
+        ax = fig.add_subplot(2, 3, k + 2)
+        ax.set_title('Affected for $k=$' + str(k), fontsize=7)
+    elif k == 4:
+        ax = fig.add_subplot(2, 3, k + 2)
+        ax.set_title('Affected for $k=$' + str(k), fontsize=7)
+    if k != 5:
+        drawCoefficientGrid(NWorldCoarse, vis, fig, ax, original_style=True, colorbar=False)
 
-fig = plt.figure("error indicator")
-ax = fig.add_subplot(1,1,1)
-np_eps = np.einsum('i,i -> i', np.ones(np.size(epsFine)), epsFine)
-drawCoefficientGrid(NWorldCoarse, np_eps,fig,ax, original_style=True, logplot=True)
-
-fig = plt.figure("error indicator coarse")
-ax = fig.add_subplot(1,1,1)
-np_eps = np.einsum('i,i -> i', np.ones(np.size(epsCoarse)), epsCoarse)
-drawCoefficientGrid(NWorldCoarse, np_eps,fig,ax, original_style=True, logplot=True)
-
+fig = plt.figure("Correcting")
+ax = fig.add_subplot(2, 3, 2)
+ax.set_title('Defects', fontsize=7)
+drawCoefficientwg(NWorldFine, D, fig, ax)
 
 plt.show()

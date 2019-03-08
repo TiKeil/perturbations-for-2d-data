@@ -265,9 +265,13 @@ def AllshapesSixdrawCoefficient(N, a, b, c , d, e, f):
                cmap=cm.plasma)
     plt.axis('off')
 
-def drawCoefficientGrid(N, a, fig, ax, Greys=False, original_style = False):
-    aCube = a.reshape(N, order ='F')
+def drawCoefficientGrid(N, a, fig, ax, Greys=False, original_style = False, logplot=False, colorbar=True):
+    if logplot:
+        aCube = np.log10(a.reshape(N, order='F'))
+    else:
+        aCube = a.reshape(N, order ='F')
     aCube = np.ascontiguousarray(aCube.T)
+
 
     te = 16
     major_ticks = np.arange(0, te, 1)
@@ -282,16 +286,19 @@ def drawCoefficientGrid(N, a, fig, ax, Greys=False, original_style = False):
     ax.set_xticks(major_ticks)                                                       
     ax.set_yticks(major_ticks)                                                       
     ax.tick_params(axis='both', which='both', bottom=False, top=False, labelbottom=False, right=False, left=False, labelleft=False)
-    ax.grid(which='both')                                                            
+    fig.subplots_adjust(left=0.00, bottom=0.02, right=1, top=0.95, wspace=0.2, hspace=0.2)
+    ax.grid(which='both')
     ax.grid(which='major', linestyle="-", color="grey")
-    fig.colorbar(im)
+    if colorbar:
+        fig.colorbar(im)
 
 def drawCoefficientwg(N, a, fig, ax, Greys=False):
-    aCube = a.reshape(N) 
+    aCube = a.reshape(N, order='F')
+    aCube = np.ascontiguousarray(aCube)
     if Greys:
-        ax.imshow(aCube, cmap='Greys')
+        ax.imshow(aCube, cmap='Greys', origin='lower')
     else:
-        ax.imshow(aCube, cmap=cm.Blues)
+        ax.imshow(aCube, cmap=cm.plasma, origin='lower')
     ax.tick_params(axis='both', which='both', bottom=False, top=False, labelbottom=False, right=False, left=False, labelleft=False)
     
     # or if you want differnet settings for the grids:                               
