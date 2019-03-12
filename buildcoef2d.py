@@ -35,7 +35,8 @@ class Coefficient2d:
                     Boxes2n=None,
                     Channels2n=None,
                     NewShapes=None,
-                    TestExample=None):
+                    TestExample=None,
+                    ChoosingShapes=None):
         
         '''
         2dCoefficient   
@@ -98,6 +99,8 @@ class Coefficient2d:
         self.valuecounter = None
         
         self.TestExample = TestExample
+
+        self.ChoosingShapes = ChoosingShapes
         
     def NewShape(self, ShapeBuildMatrix):
         '''
@@ -196,8 +199,9 @@ class Coefficient2d:
         equidistant = self.equidistant  
         ChannelHorizontal = self.ChannelHorizontal  
         ChannelVertical = self.ChannelVertical 
-        BoundarySpace = self.BoundarySpace 
-        
+        BoundarySpace = self.BoundarySpace
+        ChoosingShapes = self.ChoosingShapes
+
         #essential
         A = np.zeros(NWorldFine)
         B = A.copy()
@@ -205,64 +209,6 @@ class Coefficient2d:
         S = np.array([])
         #for remember
         shapecounter = 0
-        
-        #add not included coefficients 
-        #Maybe improve 
-        if self.Channels2n:
-            self.down = True
-            self.length = NWorldFine[0]
-            self.thick = 1
-            self.space = 1
-            #EvenChannels
-            Abase = np.zeros(NWorldFine[1])
-            for i in range(2,NWorldFine[1]/2-1,2):
-                shapecounter += 1
-                S = np.append(S,[4,self.length,1])
-                Abase[i] = val-bg
-                Abase[i+NWorldFine[1]/2-1] = val-bg
-    
-            AbaseCube = np.tile(Abase[...,np.newaxis], [NWorldFine[0],1])
-            AbaseCube = AbaseCube[...,np.newaxis]
-            ABase = AbaseCube.flatten()
-            A = ABase.reshape(NWorldFine)
-            A += bg
-            S = np.reshape(S,(shapecounter,3))
-            self.ShapeRemember = S
-            self.ShapeRememberOriginal = S
-            self.Matrix = A
-            self.RandomMatrix = A
-            return A
-            
-        if self.Boxes2n:
-            self.right = True
-            self.length = 1
-            self.thick = 1
-            self.space = 1
-            #annas coeff for even boxes
-            A = np.zeros(NWorldFine)
-            A += bg
-            for i in range(2,NWorldFine[0]/2-1,2):
-                for j in range(2,NWorldFine[1]/2-1,2):
-                    A[i][j]= val
-                    A[i+NWorldFine[0]/2-1][j]= val
-                    #shaperemember
-                    shapecounter += 1
-                    S = np.append(S,[1,1,1])
-                for k in range(NWorldFine[1]/2+1,NWorldFine[1]-2,2):
-                    A[i][k]= val
-                    A[i+NWorldFine[0]/2-1][k]= val
-                    #shaperemember
-                    shapecounter += 1
-                    S = np.append(S,[1,1,1])
-            
-            S = np.reshape(S,(shapecounter,3))
-            self.Matrix=A
-            self.ShapeRemember = S
-            self.ShapeRememberOriginal = S
-            self.RandomMatrix = A
-            return A
-        
-        
         
         np.random.seed(0)
         if self.probfactor > 0:
@@ -330,14 +276,15 @@ class Coefficient2d:
         
         if self.TestExample:
             startj=22
-            
+
+        # for choosing shapes
+        choosing=-1
+
         for i in range(starti,endi):
-            #special for channel
             for j in range(startj,endj):
-                # print "i" + str(i)
-                # print "j" + str(j)
                 #can we do something here?
                 if A[i][j] == 0:
+                    choosing+=1
                     #will we do something here?
                     A[i][j] = random.sample(list(valorbg),1)[0]
                     if equidistant:
@@ -351,11 +298,22 @@ class Coefficient2d:
                         A[i][j] = 0
                         stop = 0 #initial for loop change
                         #build zuf
-                        if ChannelVertical:
+                        if ChannelVertical and ChoosingShapes is None:
                             zuf = [4]
-                        elif ChannelHorizontal:
+                        elif ChannelHorizontal and ChoosingShapes is None:
                             zuf = [1]
-                        
+                        elif ChoosingShapes is not None:
+                            if choosing-1 < np.shape(ChoosingShapes)[0]:
+                                if choosing  !=  np.shape(ChoosingShapes)[0]:
+                                    zuf = [ChoosingShapes[choosing][0]]
+                                    Len = ChoosingShapes[choosing][1]
+                                    thick = ChoosingShapes[choosing][2]
+                                    space = ChoosingShapes[choosing][3]
+                                else:
+                                    ChoosingShapes = None
+                                    space = self.space
+                            else:
+                                zuf=[0]
                         else:
                             zuf = []
                             zuf.extend([self.right*1,self.down*4,self.diagr1*2,self.diagr2*3,self.diagl1*5,self.diagl2*6])
@@ -363,7 +321,7 @@ class Coefficient2d:
                                 #IMMPORTANT
                                 zuf.append(s+7)
                             zuf = list([x for x in zuf if x!=0])
-                    
+
                         zuf1 = random.sample(zuf,1)[0] #chooses shape
                         '''
                         1 : right
