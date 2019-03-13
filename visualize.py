@@ -5,6 +5,7 @@
 
 import numpy as np
 
+import matplotlib
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
 from matplotlib.ticker import LinearLocator, FormatStrFormatter, MultipleLocator
@@ -266,12 +267,9 @@ def AllshapesSixdrawCoefficient(N, a, b, c , d, e, f):
     plt.axis('off')
 
 def drawCoefficientGrid(N, a, fig, ax, Greys=False, original_style = False, logplot=False, colorbar=True):
-    if logplot:
-        aCube = np.log10(a.reshape(N, order='F'))
-    else:
-        aCube = a.reshape(N, order ='F')
+    #now we only use log plots
+    aCube = a.reshape(N, order ='F')
     aCube = np.ascontiguousarray(aCube.T)
-
 
     te = 16
     major_ticks = np.arange(0, te, 1)
@@ -279,9 +277,9 @@ def drawCoefficientGrid(N, a, fig, ax, Greys=False, original_style = False, logp
         im  = ax.imshow(aCube, cmap='Greys', extent=[0, te, 0, te])
     else:
         if original_style:
-            im = ax.imshow(aCube, cmap=cm.Blues, origin='lower', extent=[0, te, 0, te])
+            im = ax.imshow(aCube, cmap=cm.Blues, origin='lower', extent=[0, te, 0, te], norm=matplotlib.colors.LogNorm())
         else:
-            im = ax.imshow(aCube, cmap=cm.Blues, extent=[0, te, 0, te])
+            im = ax.imshow(aCube, cmap=cm.Blues, extent=[0, te, 0, te], norm=matplotlib.colors.LogNorm())
     ax.axis([0, te, 0, te])
     ax.set_xticks(major_ticks)                                                       
     ax.set_yticks(major_ticks)                                                       
@@ -291,6 +289,8 @@ def drawCoefficientGrid(N, a, fig, ax, Greys=False, original_style = False, logp
     ax.grid(which='major', linestyle="-", color="grey")
     if colorbar:
         fig.colorbar(im)
+
+
 
 def drawCoefficientwg(N, a, fig, ax, Greys=False):
     aCube = a.reshape(N, order='F')
