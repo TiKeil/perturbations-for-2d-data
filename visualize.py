@@ -271,7 +271,7 @@ def drawCoefficientGrid(N, a, fig, ax, Greys=False, original_style = False, logp
     aCube = a.reshape(N, order ='F')
     aCube = np.ascontiguousarray(aCube.T)
 
-    te = 16
+    te = 32
     major_ticks = np.arange(0, te, 1)
     if Greys:
         im  = ax.imshow(aCube, cmap='Greys', extent=[0, te, 0, te])
