@@ -189,12 +189,15 @@ def d3plotter(N, s, String='FinescaleSolution', boundary=None, zmax=None, zmin=N
     
     if boundary is not None:
         surf = ax.plot_surface(X, Y, uLodFine, cmap=cm.coolwarm, vmin=boundary[0], vmax=boundary[1])
+
         ax.set_zlim(boundary[0], boundary[1])
     ax.zaxis.set_major_locator(LinearLocator(10))
     if zmin is not None:
         ax.set_zlim(zmin,zmax)
     ax.axis('off')
     ax.grid(False)
+    surf._facecolors2d = surf._facecolors3d
+    surf._edgecolors2d = surf._edgecolors3d
     fig.subplots_adjust(left=0.00,bottom=0.00,right=1,top=1,wspace=0.2,hspace=0.2)
 
 def drawPatches(N, a, fig, ax, te):
@@ -266,12 +269,12 @@ def AllshapesSixdrawCoefficient(N, a, b, c , d, e, f):
                cmap=cm.plasma)
     plt.axis('off')
 
-def drawCoefficientGrid(N, a, fig, ax, Greys=False, original_style = False, logplot=False, colorbar=True):
+def drawCoefficientGrid(N, a, fig, ax, Greys=False, original_style = False, logplot=False, colorbar=True, Gridsize = 4):
     #now we only use log plots
     aCube = a.reshape(N, order ='F')
     aCube = np.ascontiguousarray(aCube.T)
 
-    te = 32
+    te = Gridsize
     major_ticks = np.arange(0, te, 1)
     if Greys:
         im  = ax.imshow(aCube, cmap='Greys', extent=[0, te, 0, te])

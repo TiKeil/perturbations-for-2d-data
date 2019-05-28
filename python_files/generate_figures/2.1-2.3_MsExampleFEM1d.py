@@ -7,9 +7,9 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
-from gridlod import util, world, fem
+from gridlod import util, world, fem, femsolver
 from gridlod.world import World
-import femsolverCoarse, buildcoef2d
+import buildcoef2d
 
 # Example from Peterseim, Variational Multiscale Stabilization and the Exponential Decay of correctors, p. 2
 # Two modifications: A with minus and u(here) = 1/4*u(paper).
@@ -67,12 +67,12 @@ for N in NList:
     #grid nodes
     xpCoarse = util.pCoordinates(NWorldCoarse).flatten()
     NpCoarse = np.prod(NWorldCoarse+1)
-    f = np.ones(NpCoarse)
-    uCoarseFull = femsolverCoarse.solveCoarse_fem(world, aFine, f, boundaryConditions)
-    
+    f = np.ones(NpFine)
+    uCoarseFull, uFineFull = femsolver.solveCoarse(world, aFine, f, None, boundaryConditions)
+
     basis = fem.assembleProlongationMatrix(NWorldCoarse, NCoarseElement)
-    uLodCoarse = basis*uCoarseFull
-    newErrorFine.append(np.sqrt(np.dot(uSol - uLodCoarse, AFine*(uSol - uLodCoarse))))
+
+    newErrorFine.append(np.sqrt(np.dot(uSol - uFineFull, AFine*(uSol - uFineFull))))
     x.append(N)
     y.append(1./N)
     if np.size(x)==1:
