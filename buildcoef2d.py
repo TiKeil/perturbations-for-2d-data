@@ -42,6 +42,13 @@ class Coefficient2d:
         2dCoefficient   
         '''
 
+        # TODO: FIX THIS !
+        if bg == 1:
+            print('WARNING: Do not use 1 for bg')
+        if val == 0.01:
+            print('WARNING: Do not use 0.01 for val')
+
+
         self.actual_bg = bg
         self.actual_val = val
         self.NWorldFine = NWorldFine 
