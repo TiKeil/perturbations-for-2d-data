@@ -26,7 +26,7 @@ def drawCoefficient(N, a, greys=False, normalize=None, cmap_default = False, col
     elif cmap_default:
         cmap = None
     else:
-        cmap = cm.plasma
+        cmap = cm.hot_r
 
     if normalize is None:
         plt.imshow(aCube,
@@ -52,16 +52,16 @@ def drawCoefficientwt(N, a, greys=False):
     '''
     visualizing the 2d coefficient without a title
     '''
-    aCube = a.reshape(N) 
+    aCube = a.reshape(N)
     plt.clf()
-    
+
     if greys:
         cmap = 'Greys'
     else:
-        cmap = cm.plasma
-            
+        cmap = cm.hot_r
+
     plt.imshow(aCube,
-               origin='upper', 
+               origin='upper',
                interpolation='none',
                cmap=cmap)
     plt.tick_params(axis='both', which='both', bottom=False, top=False, labelbottom=False, right=False, left=False, labelleft=False)
@@ -69,65 +69,65 @@ def drawCoefficientwt(N, a, greys=False):
 
 
 def ExtradrawCoefficient(N, a, b, c ,d):
-    aCube = a.reshape(N) 
-    bCube = b.reshape(N) 
-    cCube = c.reshape(N) 
-    dCube = d.reshape(N)  
-    
+    aCube = a.reshape(N)
+    bCube = b.reshape(N)
+    cCube = c.reshape(N)
+    dCube = d.reshape(N)
+
     plt.clf()
-    
+
     cmap = plt.cm.viridis
-                
+
     plt.subplot(221)
     plt.title("Original", fontsize=10)
     plt.imshow(aCube,
-               origin='upper',   
+               origin='upper',
                interpolation='none',
-               cmap=cm.plasma)
+               cmap=cm.hot_r)
     plt.tick_params(axis='both', which='both', bottom=False, top=False, labelbottom=False, right=False, left=False, labelleft=False)
     plt.subplots_adjust(left=0.00,bottom=0.02,right=1,top=0.95,wspace=0.00,hspace=0.15)
-    
+
     plt.subplot(222)
     plt.title("Change in value", fontsize=10)
     plt.imshow(bCube,
-               origin='upper',  
+               origin='upper',
                interpolation='none',
-               cmap=cm.plasma)
+               cmap=cm.hot_r)
     plt.tick_params(axis='both', which='both', bottom=False, top=False, labelbottom=False, right=False, left=False, labelleft=False)
     plt.subplots_adjust(left=0.00,bottom=0.02,right=1,top=0.95,wspace=0.00,hspace=0.15)
-    
+
     plt.subplot(223)
     plt.title("Disappearance", fontsize=10)
     plt.imshow(cCube,
-               origin='upper', 
+               origin='upper',
                interpolation='none',
-               cmap=cm.plasma)
+               cmap=cm.hot_r)
     plt.tick_params(axis='both', which='both', bottom=False, top=False, labelbottom=False, right=False, left=False, labelleft=False)
     plt.subplots_adjust(left=0.00,bottom=0.02,right=1,top=0.95,wspace=0.00,hspace=0.15)
     plt.subplot(224)
     plt.title("Shift", fontsize=10)
     plt.imshow(dCube,
-               origin='upper', 
+               origin='upper',
                interpolation='none',
-               cmap=cm.plasma)
+               cmap=cm.hot_r)
     plt.tick_params(axis='both', which='both', bottom=False, top=False, labelbottom=False, right=False, left=False, labelleft=False)
     plt.subplots_adjust(left=0.00,bottom=0.02,right=1,top=0.95,wspace=0.00,hspace=0.15)
-    
+
 def d3sol(N, s, String='FinescaleSolution'):
     '''
     3d solution
-    ''' 
+    '''
     fig = plt.figure(String)
-    ax = fig.add_subplot(111, projection='3d') 
-    
+    ax = fig.add_subplot(111, projection='3d')
+
     xp = util.pCoordinates(N)
     X = xp[0:,1:].flatten()
     Y = xp[0:,:1].flatten()
     X = np.unique(X)
     Y = np.unique(Y)
-    
+
     X, Y = np.meshgrid(X, Y)
-    
+
     uLodFine = s.reshape(N+1)
 
     # Plot the surface.
@@ -142,12 +142,12 @@ def d3sol(N, s, String='FinescaleSolution'):
 
     # Add a color bar which maps values to colors.
     fig.colorbar(surf, shrink=0.5, aspect=5)
-    
+
 def d3solextra(N, s, fig, ax, ymin, ymax):
     '''
     function for 2d fem example
     '''
-    
+
     xp = util.pCoordinates(N)
     X = xp[0:,1:].flatten()
     Y = xp[0:,:1].flatten()
@@ -170,23 +170,23 @@ def d3solextra(N, s, fig, ax, ymin, ymax):
 
 def d3plotter(N, s, String='FinescaleSolution', boundary=None, zmax=None, zmin=None):
     fig = plt.figure(String)
-    ax = fig.add_subplot(111, projection='3d') 
-    
+    ax = fig.add_subplot(111, projection='3d')
+
     xp = util.pCoordinates(N)
     X = xp[0:,1:].flatten()
     Y = xp[0:,:1].flatten()
     X = np.unique(X)
     Y = np.unique(Y)
-    
+
     X, Y = np.meshgrid(X, Y)
-    
+
     uLodFine = s.reshape(N+1)
     # Plot the surface.
     if zmin is not None:
         surf = ax.plot_surface(X, Y, uLodFine, cmap=cm.coolwarm, vmin=zmin, vmax=zmax)
     else:
         surf = ax.plot_surface(X, Y, uLodFine, cmap=cm.coolwarm)
-    
+
     if boundary is not None:
         surf = ax.plot_surface(X, Y, uLodFine, cmap=cm.coolwarm, vmin=boundary[0], vmax=boundary[1])
 
@@ -202,71 +202,71 @@ def d3plotter(N, s, String='FinescaleSolution', boundary=None, zmax=None, zmin=N
 
 def drawPatches(N, a, fig, ax, te):
     aCube = a.reshape(N)
-        
+
     if te == 10:
         ax.plot(5,5,'*w')
-    
-    major_ticks = np.arange(0, te, 1)                                                
+
+    major_ticks = np.arange(0, te, 1)
     ax.imshow(aCube, cmap=cm.Blues, extent=[0, te, 0, te])
-    
+
     ax.axis([0, te, 0, te])
-    ax.set_xticks(major_ticks)                                                       
-    ax.set_yticks(major_ticks)                                                       
+    ax.set_xticks(major_ticks)
+    ax.set_yticks(major_ticks)
     ax.tick_params(axis='both', which='both', bottom=False, top=False, labelbottom=False, right=False, left=False, labelleft=False)
-    ax.grid(which='both')                                                            
-    ax.grid(which='major', linestyle="-", color="black")                                                
+    ax.grid(which='both')
+    ax.grid(which='major', linestyle="-", color="black")
 
 def AllshapesSixdrawCoefficient(N, a, b, c , d, e, f):
-    aCube = a.reshape(N) 
-    bCube = b.reshape(N) 
-    cCube = c.reshape(N) 
-    dCube = d.reshape(N) 
+    aCube = a.reshape(N)
+    bCube = b.reshape(N)
+    cCube = c.reshape(N)
+    dCube = d.reshape(N)
     eCube = e.reshape(N)
     fCube = f.reshape(N)
-    
+
     plt.clf()
-                
+
     plt.subplot(161)
     plt.title("Shape 1.", fontsize=10)
     plt.imshow(aCube,
-               origin='upper',  
+               origin='upper',
                interpolation='none',
-               cmap=cm.plasma)
+               cmap=cm.hot_r)
     plt.axis('off')
     plt.subplot(162)
     plt.title("Shape 2.", fontsize=10)
     plt.imshow(bCube,
-               origin='upper',   
+               origin='upper',
                interpolation='none',
-               cmap=cm.plasma)
+               cmap=cm.hot_r)
     plt.axis('off')
     plt.subplot(163)
     plt.title("Shape 3.", fontsize=10)
     plt.imshow(cCube,
-               origin='upper',   
+               origin='upper',
                interpolation='none',
-               cmap=cm.plasma)
+               cmap=cm.hot_r)
     plt.axis('off')
     plt.subplot(164)
     plt.title("Shape 4.", fontsize=10)
     plt.imshow(dCube,
-               origin='upper',  
+               origin='upper',
                interpolation='none',
-               cmap=cm.plasma)
+               cmap=cm.hot_r)
     plt.axis('off')
     plt.subplot(165)
     plt.title("Shape 5.", fontsize=10)
     plt.imshow(eCube,
-               origin='upper', 
+               origin='upper',
                interpolation='none',
-               cmap=cm.plasma)
+               cmap=cm.hot_r)
     plt.axis('off')
     plt.subplot(166)
     plt.title("Shape 6.", fontsize=10)
     plt.imshow(fCube,
-               origin='upper', 
+               origin='upper',
                interpolation='none',
-               cmap=cm.plasma)
+               cmap=cm.hot_r)
     plt.axis('off')
 
 def drawCoefficientGrid(N, a, fig, ax, Greys=False, original_style = False, logplot=False, colorbar=True, Gridsize = 4):
@@ -280,12 +280,12 @@ def drawCoefficientGrid(N, a, fig, ax, Greys=False, original_style = False, logp
         im  = ax.imshow(aCube, cmap='Greys', extent=[0, te, 0, te])
     else:
         if original_style:
-            im = ax.imshow(aCube, cmap=cm.Blues, origin='lower', extent=[0, te, 0, te], norm=matplotlib.colors.LogNorm())
+            im = ax.imshow(aCube, cmap=cm.hot_r, origin='lower', extent=[0, te, 0, te], norm=matplotlib.colors.LogNorm())
         else:
-            im = ax.imshow(aCube, cmap=cm.Blues, extent=[0, te, 0, te], norm=matplotlib.colors.LogNorm())
+            im = ax.imshow(aCube, cmap=cm.hot_r, extent=[0, te, 0, te], norm=matplotlib.colors.LogNorm())
     ax.axis([0, te, 0, te])
-    ax.set_xticks(major_ticks)                                                       
-    ax.set_yticks(major_ticks)                                                       
+    ax.set_xticks(major_ticks)
+    ax.set_yticks(major_ticks)
     ax.tick_params(axis='both', which='both', bottom=False, top=False, labelbottom=False, right=False, left=False, labelleft=False)
     fig.subplots_adjust(left=0.00, bottom=0.02, right=1, top=0.95, wspace=0.2, hspace=0.2)
     ax.grid(which='both')
@@ -301,7 +301,7 @@ def drawCoefficientwg(N, a, fig, ax, Greys=False):
     if Greys:
         ax.imshow(aCube, cmap='Greys', origin='lower')
     else:
-        ax.imshow(aCube, cmap=cm.plasma, origin='lower')
+        ax.imshow(aCube, cmap=cm.hot_r, origin='lower')
     ax.tick_params(axis='both', which='both', bottom=False, top=False, labelbottom=False, right=False, left=False, labelleft=False)
     
     # or if you want differnet settings for the grids:                               
