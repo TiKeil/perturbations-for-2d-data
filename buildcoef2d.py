@@ -36,7 +36,8 @@ class Coefficient2d:
                     Channels2n=None,
                     NewShapes=None,
                     TestExample=None,
-                    ChoosingShapes=None):
+                    ChoosingShapes=None,
+                    soilMatrix = None):
         
         '''
         2dCoefficient   
@@ -108,7 +109,9 @@ class Coefficient2d:
         self.TestExample = TestExample
 
         self.ChoosingShapes = ChoosingShapes
-        
+
+        self.soilMatrix = soilMatrix
+
     def NewShape(self, ShapeBuildMatrix):
         '''
         you need to enumerate the new shapes by yourself
@@ -301,7 +304,15 @@ class Coefficient2d:
                         #len randomizing
                         Len = random.sample(LenList,1)[0]
                         thick = random.sample(thickList,1)[0]
-                        #yes but first go back to zero
+
+                        if self.soilMatrix is not None:
+                            for st in self.soilMatrix:
+                                if st[0] <= shapecounter and shapecounter < st[1]:
+                                    space = int(st[2])
+                                    thick = int(st[3])
+                                    Len = thick
+
+                        #First go back to zero
                         A[i][j] = 0
                         stop = 0 #initial for loop change
                         #build zuf
@@ -2191,4 +2202,16 @@ class Coefficient2d:
         
         self.RandomMatrix = A
         return A
-        
+
+
+def soil_converter(input_array, NFine, BoundarySpace = 0):
+    fine = NFine[0]
+    offset = 0
+    output = np.array([])
+    for st in input_array:
+        # for thick and space, one line consists of the following number of elements
+        dots_per_line = int((fine - BoundarySpace) / (st[1] + st[2]))
+        output = np.append(output, [offset,offset + dots_per_line*st[0], st[1], st[2]])
+        offset += dots_per_line*st[0]
+    output = output.reshape(len(input_array),4)
+    return output
