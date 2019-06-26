@@ -111,6 +111,7 @@ class Coefficient2d:
         self.ChoosingShapes = ChoosingShapes
 
         self.soilMatrix = soilMatrix
+        self.local_shapecounter = 0
 
     def NewShape(self, ShapeBuildMatrix):
         '''
@@ -290,6 +291,10 @@ class Coefficient2d:
         # for choosing shapes
         choosing=-1
 
+        old_shapecounter = 0
+        idx = 0
+        stop_soil = 0
+
         for i in range(starti,endi):
             for j in range(startj,endj):
                 #can we do something here?
@@ -305,12 +310,27 @@ class Coefficient2d:
                         Len = random.sample(LenList,1)[0]
                         thick = random.sample(thickList,1)[0]
 
-                        if self.soilMatrix is not None:
-                            for st in self.soilMatrix:
-                                if st[0] <= shapecounter and shapecounter < st[1]:
-                                    space = int(st[2])
-                                    thick = int(st[3])
-                                    Len = thick
+                        # go back to default
+                        space = np.copy(self.space)
+
+                        if self.soilMatrix is not None and stop_soil is not 1:
+                            matrix = self.soilMatrix
+                            soil_size = np.shape(matrix)[0]
+                            self.local_shapecounter += (shapecounter - old_shapecounter)
+                            dots_per_line = self.local_shapecounter // matrix[idx][0]
+                            if dots_per_line >= (matrix[idx,1]):
+                                if idx < soil_size - 1:
+                                    idx += 1
+                                    self.local_shapecounter = 0
+                                else:
+                                    stop_soil = 1
+
+                            if stop_soil is not 1:
+                                space = int(matrix[idx][2])
+                                thick = int(matrix[idx][3])
+                                Len = thick
+                                old_shapecounter = shapecounter
+
 
                         #First go back to zero
                         A[i][j] = 0
@@ -2204,14 +2224,12 @@ class Coefficient2d:
         return A
 
 
-def soil_converter(input_array, NFine, BoundarySpace = 0):
+def soil_converter(input_array, NFine, BoundarySpace = 1):
     fine = NFine[0]
-    offset = 0
     output = np.array([])
     for st in input_array:
-        # for thick and space, one line consists of the following number of elements
-        dots_per_line = int((fine - BoundarySpace) / (st[1] + st[2]))
-        output = np.append(output, [offset,offset + dots_per_line*st[0], st[1], st[2]])
-        offset += dots_per_line*st[0]
+        # for thick and space, one line consists approx of the following number of elements
+        estimated_dots_per_line = int((fine - BoundarySpace) / (st[1] + st[2]))
+        output = np.append(output, [st[0],estimated_dots_per_line, st[1], st[2]])
     output = output.reshape(len(input_array),4)
     return output
