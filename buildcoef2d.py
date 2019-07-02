@@ -452,7 +452,7 @@ class Coefficient2d:
                 if Ret[i][j] == self.val:
                     Ret[i][j] = self.actual_val
 
-
+        self.shapecounter = shapecounter
         return Ret
         
         
