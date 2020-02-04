@@ -37,11 +37,19 @@ class Coefficient2d:
                     NewShapes=None,
                     TestExample=None,
                     ChoosingShapes=None,
-                    soilMatrix = None):
+                    soilMatrix = None,
+                    normally_distributed_val=None,
+                    normally_distributed_bg=None):
         
         '''
         2dCoefficient   
         '''
+
+        #distributed vals
+        self.normally_distributed_val = normally_distributed_val
+
+        #distributed bgs
+        self.normally_distributed_bg = normally_distributed_bg
 
         # TODO: FIX THIS !
         if bg == 1:
@@ -405,7 +413,20 @@ class Coefficient2d:
                         shapecounter += 1
                         S = np.append(S,[zuf1,Len,thick])
                         ############################### keine if-abfragen zum crash mehr notwendig ###############
-                        
+
+                        if self.normally_distributed_val is not None:
+                            assert isinstance(self.normally_distributed_val, list)
+                            a, b = self.normally_distributed_val[0], self.normally_distributed_val[1]
+                            from random import uniform
+                            val = uniform(a,b)
+
+                        # if self.normally_distributed_bg is not None:
+                        #     assert isinstance(self.normally_distributed_bg, list)
+                        #     a, b = self.normally_distributed_bg[0], self.normally_distributed_bg[1]
+                        #     from random import uniform
+                        #     bg = uniform(a,b)
+
+
                         if zuf1 == 1:
                             A, B = self.BuildRight(A, B, i, j, val, bg, Len, thick, space)
                         elif zuf1 == 2:
@@ -426,7 +447,7 @@ class Coefficient2d:
                                 NewShapeMatrix = np.reshape(NewShapeMatrix,(int(self.ShapeSizes[s][0]),int(self.ShapeSizes[s][1])))
                                 ShapeCoords = self.ShapeCoords[self.CoordsIndex[s]:self.CoordsIndex[s+1]]
                                 A, B = self.BuildNewShapes(NewShapeMatrix, ShapeCoords, A, B, i, j, val, bg, space)
-                        
+                        val = self.val
         #search for all values
         valuecounter = 0
         for i in range(0,NWorldFine[0]):
@@ -438,13 +459,21 @@ class Coefficient2d:
                 
         S = np.reshape(S,(shapecounter,3))
         #print S
+
+        if self.normally_distributed_bg is not None:
+            np.random.seed(1)
+            noisy_bg = np.random.rand(B.shape[0], B.shape[1]) * self.normally_distributed_bg[1]
+            noisy_bg.clip(self.normally_distributed_bg[0],self.normally_distributed_bg[1])
+        else:
+            noisy_bg = 0
+
         B += bg
         self.Matrix = B
         self.ShapeRemember = S
         self.ShapeRememberOriginal = S
         self.RandomMatrix = B
 
-        Ret = np.copy(B)
+        Ret = np.copy(B) + noisy_bg
         for i in range(0,NWorldFine[0]):
             for j in range(0,NWorldFine[1]):
                 if Ret[i][j] == self.bg:
@@ -1275,7 +1304,7 @@ class Coefficient2d:
                         if np.size(NumberList) == 1:
                             vanish = bg
                         else:
-                            vanish = val
+                            vanish = A[i][j]
                         
                         #initial diecounter
                         died = 0
@@ -1306,6 +1335,16 @@ class Coefficient2d:
                         
         self.RandomMatrix = C
         Ret = np.copy(C)
+
+        if self.normally_distributed_bg is not None:
+            np.random.seed(1)
+            noisy_bg = np.random.rand(Ret.shape[0], Ret.shape[1]) * self.normally_distributed_bg[1]
+            noisy_bg.clip(self.normally_distributed_bg[0],self.normally_distributed_bg[1])
+        else:
+            noisy_bg = 0
+
+        Ret += noisy_bg
+
         for i in range(0,NWorldFine[0]):
             for j in range(0,NWorldFine[1]):
                 if Ret[i][j] == self.bg:
