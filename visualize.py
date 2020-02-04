@@ -13,6 +13,36 @@ from matplotlib import cm
 
 from gridlod import util
 
+def drawCoefficient_origin(N, a, transformed = False, lim=None):
+    # This is drawCoefficient from test_pgtransport.py in gridlod
+    if a.ndim == 3:
+        a = np.linalg.norm(a, axis=(1, 2), ord=2)
+
+    aCube = a.reshape(N, order='F')
+    aCube = np.ascontiguousarray(aCube.T)
+
+    plt.clf()
+
+    cmap = plt.cm.hot_r
+    if lim is not None:
+        plt.imshow(aCube,
+                   origin='lower_left',
+                   interpolation='none', cmap=cmap,
+                   norm=matplotlib.colors.LogNorm(), vmax=lim[0], vmin=lim[1])
+    else:
+        plt.imshow(aCube,
+                   origin='lower_left',
+                   interpolation='none', cmap=cmap,
+                   norm=matplotlib.colors.LogNorm())
+
+    plt.xticks([])
+    plt.yticks([])
+    plt.colorbar()
+    if transformed:
+        cb = plt.colorbar()
+        font_size = 14  # Adjust as appropriate.
+        cb.ax.tick_params(labelsize=font_size)
+        cb.set_ticks([0.1,1,10])
 
 def drawCoefficient(N, a, greys=False, normalize=None, cmap_default = False, colorbar=False):
     '''
