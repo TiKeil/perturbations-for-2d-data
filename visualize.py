@@ -13,7 +13,7 @@ from matplotlib import cm
 
 from gridlod import util
 
-def drawCoefficient_origin(N, a, transformed = False, lim=None):
+def drawCoefficient_origin(N, a, transformed = False, lim=None, logNorm=True, colorbar=True):
     # This is drawCoefficient from test_pgtransport.py in gridlod
     if a.ndim == 3:
         a = np.linalg.norm(a, axis=(1, 2), ord=2)
@@ -30,14 +30,20 @@ def drawCoefficient_origin(N, a, transformed = False, lim=None):
                    interpolation='none', cmap=cmap,
                    norm=matplotlib.colors.LogNorm(), vmax=lim[0], vmin=lim[1])
     else:
-        plt.imshow(aCube,
-                   origin='lower_left',
-                   interpolation='none', cmap=cmap,
-                   norm=matplotlib.colors.LogNorm())
+        if logNorm:
+            plt.imshow(aCube,
+                       origin='lower_left',
+                       interpolation='none', cmap=cmap,
+                       norm=matplotlib.colors.LogNorm())
+        else:
+            plt.imshow(aCube,
+                       origin='lower_left',
+                       interpolation='none', cmap=cmap)
 
     plt.xticks([])
     plt.yticks([])
-    plt.colorbar()
+    if colorbar:
+        plt.colorbar()
     if transformed:
         cb = plt.colorbar()
         font_size = 14  # Adjust as appropriate.
@@ -161,17 +167,20 @@ def d3sol(N, s, String='FinescaleSolution'):
     uLodFine = s.reshape(N+1)
 
     # Plot the surface.
-    surf = ax.plot_surface(X, Y, uLodFine, cmap=cm.jet)
-    ymin, ymax = ax.set_zlim()
-    ax.set_zticks((ymin,ymax))
-    ax.set_zlabel('$z$')
-    ax.set_xlabel('$x$')
-    ax.set_ylabel('$y$')
-    ax.zaxis.set_major_locator(LinearLocator(10))
-    ax.axis('off')
+    ymin, ymax = ax.set_zlim([0,0.021])
+    ax.set_zticks((ymin, ymax))
+    ax.zaxis.set_major_formatter(FormatStrFormatter('%.3f'))
+    ax.set_zlabel('$z$', size=16)
+    ax.set_xlabel('$x$', size=16)
+    ax.set_ylabel('$y$', size=16)
+    # ax.view_init(50, 35)
+    ax.zaxis.set_major_locator(LinearLocator(4))
+    ax.tick_params(labelsize=12)
+    #ax.axis('off')
 
     # Add a color bar which maps values to colors.
-    fig.colorbar(surf, shrink=0.5, aspect=5)
+    surf = ax.plot_surface(X, Y, uLodFine, cmap=cm.hot, vmin=0, vmax=0.021)
+    #fig.colorbar(surf, shrink=0.5)
 
 def d3solextra(N, s, fig, ax, ymin, ymax):
     '''
@@ -224,11 +233,12 @@ def d3plotter(N, s, String='FinescaleSolution', boundary=None, zmax=None, zmin=N
     ax.zaxis.set_major_locator(LinearLocator(10))
     if zmin is not None:
         ax.set_zlim(zmin,zmax)
-    ax.axis('off')
+    #ax.axis('off')
     ax.grid(False)
     surf._facecolors2d = surf._facecolors3d
     surf._edgecolors2d = surf._edgecolors3d
     fig.subplots_adjust(left=0.00,bottom=0.00,right=1,top=1,wspace=0.2,hspace=0.2)
+
 
 def drawPatches(N, a, fig, ax, te):
     aCube = a.reshape(N)
