@@ -1,29 +1,14 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
-from gridlod.world import World, Patch
-
 from MasterthesisLOD import buildcoef2d
-from gridlod_on_perturbations.visualization_tools import drawCoefficient_origin
-
+from visualize import drawCoefficient_origin
 
 potenz = 8
 factor = 2**(potenz - 8)
 fine = 2**potenz
 
-N = 2**5
-print('log H: ' ,np.abs(np.log(np.sqrt(2*(1./N**2)))))
-k = 4  # goes like log H
-
 NFine = np.array([fine,fine])
-NpFine = np.prod(NFine + 1)
-NWorldCoarse = np.array([N, N])
-
-# boundary Conditions
-boundaryConditions = np.array([[0, 0], [0, 0]])
-
-NCoarseElement = NFine // NWorldCoarse
-world = World(NWorldCoarse, NCoarseElement, boundaryConditions)
 
 '''
 Construct diffusion coefficient
