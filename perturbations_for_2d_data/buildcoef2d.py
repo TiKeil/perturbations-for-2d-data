@@ -1,8 +1,13 @@
+# ~~~
+# This file is part of the project: perturbations-for-2d-data
+#   https://github.com/TiKeil/perturbations-for-2d-data.git
+# Copyright 2017-2020: Tim Keil. All rights reserved.
+# License: Licensed as BSD 2-Clause License (http://opensource.org/licenses/BSD-2-Clause)
+# Authors:
+#   Tim Keil (2017 - 2020)
+#
 # This file is part of the master thesis "Variational crimes in the Localized orthogonal decomposition method":
-#   https://github.com/TiKeil/MasterthesisLOD.git
-# Copyright holder: Tim Keil 
-# License: BSD 2-Clause License (http://opensource.org/licenses/BSD-2-Clause)
-
+# ~~~
 
 import numpy as np
 import random
