@@ -29,7 +29,6 @@ numpy==1.18.5
 packaging==20.4
 pandocfilters==1.4.2
 parso==0.7.0
--e git+https://github.com/TiKeil/perturbations-for-2d-data.git@955b1ec95e01ad22a1aa8c817883b0bbb4d68a01#egg=perturbations_for_2d_data
 pexpect==4.8.0
 pickleshare==0.7.5
 prometheus-client==0.8.0
