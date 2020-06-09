@@ -1,3 +1,5 @@
+[![DOI](https://zenodo.org/badge/270818299.svg)](https://zenodo.org/badge/latestdoi/270818299)
+
 ```
 # ~~~
 # This file is part of the project: perturbations-for-2d-data
