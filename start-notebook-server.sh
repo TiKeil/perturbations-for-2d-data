@@ -9,4 +9,4 @@
 #   Tim Keil (2017, 2020)
 # ~~~
 
-jupyter-notebook --ip 0.0.0.0 --notebook-dir=$PWD --port=18081
+jupyter-notebook --ip 0.0.0.0 --notebook-dir=$PWD/notebooks/ --port=18081

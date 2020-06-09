@@ -20,14 +20,8 @@ The entire idea for two dimensional data is based on the python module 'gridlod'
 We recommend to use a virtual python3 environment, clone our repository and simply run
 
 ```
-pip -e . 
-```
-
-If you want to use the tutorials you should install 
-
-```
-pip install numpy scipy cython 
-pip install matplotlib notebook ipython ipdb ipyparallel
+pip install -e . 
+pip install -r requirements.txt
 ```
 
 and start a notebook servia via
