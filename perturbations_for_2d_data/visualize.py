@@ -17,6 +17,41 @@ from mpl_toolkits.mplot3d import Axes3D
 from matplotlib.ticker import LinearLocator, FormatStrFormatter, MultipleLocator
 from matplotlib import cm
 
+def d3sol(N, s, String='FinescaleSolution'):
+    '''
+    3d solution
+    '''
+    fig = plt.figure(String)
+    ax = fig.add_subplot(111, projection='3d')
+
+    from gridlod import util
+    xp = util.pCoordinates(N)
+    X = xp[0:,1:].flatten()
+    Y = xp[0:,:1].flatten()
+    X = np.unique(X)
+    Y = np.unique(Y)
+
+    X, Y = np.meshgrid(X, Y)
+
+    uLodFine = s.reshape(N+1)
+
+    # Plot the surface.
+    ymin, ymax = ax.set_zlim([0,0.021])
+    ax.set_zticks((ymin, ymax))
+    ax.zaxis.set_major_formatter(FormatStrFormatter('%.3f'))
+    ax.set_zlabel('$z$', size=16)
+    ax.set_xlabel('$x$', size=16)
+    ax.set_ylabel('$y$', size=16)
+    # ax.view_init(50, 35)
+    ax.zaxis.set_major_locator(LinearLocator(4))
+    ax.tick_params(labelsize=12)
+    #ax.axis('off')
+
+    # Add a color bar which maps values to colors.
+    surf = ax.plot_surface(X, Y, uLodFine, cmap=cm.hot, vmin=0, vmax=0.021)
+    #fig.colorbar(surf, shrink=0.5)
+
+
 def drawCoefficient_origin(N, a, transformed = False, lim=None, logNorm=True, colorbar=True):
     # This is drawCoefficient from test_pgtransport.py in gridlod
     if a.ndim == 3:
