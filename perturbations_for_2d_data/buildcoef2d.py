@@ -44,7 +44,8 @@ class Coefficient2d:
                     ChoosingShapes=None,
                     soilMatrix = None,
                     normally_distributed_val=None,
-                    normally_distributed_bg=None):
+                    normally_distributed_bg=None,
+                    seed=0):
         
         '''
         2dCoefficient   
@@ -55,6 +56,7 @@ class Coefficient2d:
 
         #distributed bgs
         self.normally_distributed_bg = normally_distributed_bg
+        self.seed = seed
 
         # TODO: FIX THIS !
         if bg == 1:
@@ -326,7 +328,7 @@ class Coefficient2d:
                         # go back to default
                         space = np.copy(self.space)
 
-                        if self.soilMatrix is not None and stop_soil is not 1:
+                        if self.soilMatrix is not None and stop_soil != 1:
                             matrix = self.soilMatrix
                             soil_size = np.shape(matrix)[0]
                             self.local_shapecounter += (shapecounter - old_shapecounter)
@@ -338,7 +340,7 @@ class Coefficient2d:
                                 else:
                                     stop_soil = 1
 
-                            if stop_soil is not 1:
+                            if stop_soil != 1:
                                 space = int(matrix[idx][2])
                                 thick = int(matrix[idx][3])
                                 Len = thick
@@ -423,14 +425,8 @@ class Coefficient2d:
                             assert isinstance(self.normally_distributed_val, list)
                             a, b = self.normally_distributed_val[0], self.normally_distributed_val[1]
                             from random import uniform
+                            np.random.seed(self.seed)
                             val = uniform(a,b)
-
-                        # if self.normally_distributed_bg is not None:
-                        #     assert isinstance(self.normally_distributed_bg, list)
-                        #     a, b = self.normally_distributed_bg[0], self.normally_distributed_bg[1]
-                        #     from random import uniform
-                        #     bg = uniform(a,b)
-
 
                         if zuf1 == 1:
                             A, B = self.BuildRight(A, B, i, j, val, bg, Len, thick, space)
@@ -466,7 +462,7 @@ class Coefficient2d:
         #print S
 
         if self.normally_distributed_bg is not None:
-            np.random.seed(1)
+            np.random.seed(self.seed)
             noisy_bg = np.random.rand(B.shape[0], B.shape[1]) * self.normally_distributed_bg[1]
             noisy_bg.clip(self.normally_distributed_bg[0],self.normally_distributed_bg[1])
         else:
