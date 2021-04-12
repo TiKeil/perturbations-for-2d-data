@@ -1,10 +1,10 @@
 # ~~~
 # This file is part of the project: perturbations-for-2d-data
 #   https://github.com/TiKeil/perturbations-for-2d-data.git
-# Copyright 2017-2020: Tim Keil. All rights reserved.
+# Copyright 2017-2021: Tim Keil. All rights reserved.
 # License: Licensed as BSD 2-Clause License (http://opensource.org/licenses/BSD-2-Clause)
 # Authors:
-#   Tim Keil (2017 - 2020)
+#   Tim Keil (2017 - 2021)
 #
 # This file is part of the master thesis "Variational crimes in the Localized orthogonal decomposition method":
 # ~~~
@@ -207,7 +207,7 @@ class Coefficient2d:
 
     def BuildCoefficient(self):
         #random seed
-        random.seed(20)
+        random.seed(self.seed)
         
         #regain properties
         NWorldFine = self.NWorldFine 
@@ -236,7 +236,7 @@ class Coefficient2d:
         #for remember
         shapecounter = 0
         
-        np.random.seed(0)
+        np.random.seed(self.seed)
         if self.probfactor > 0:
             valorbg = np.ones(self.probfactor)*bg                         #percentage
             valorbg[0] = val
@@ -269,16 +269,15 @@ class Coefficient2d:
         if thickSwitch is not None:
             assert(equidistant is None)
             thickList = thickSwitch #must be a list
-    
-    
-        if ChannelVertical:
+
+        if ChannelVertical or 1:  # <-- always start from the boundary
             starti = 0
             endi = NWorldFine[0]
         else:
             starti = 1
             endi = NWorldFine[0]-1
     
-        if ChannelHorizontal:
+        if ChannelHorizontal or 1: # <-- always start from the boundary
             startj = 0
             endj = NWorldFine[1]
         else:
@@ -403,8 +402,7 @@ class Coefficient2d:
                             NewShapeMatrix = np.reshape(NewShapeMatrix,(int(self.ShapeSizes[s][0]),int(self.ShapeSizes[s][1])))
                             ShapeCoords = self.ShapeCoords[self.CoordsIndex[s]:self.CoordsIndex[s+1]]
                             ShapeResults.append(self.InvestigateNewShapes(NewShapeMatrix, ShapeCoords, A, i, j, b, c))
-                        
-                    
+
                         for z in range(0,100):    #arbitrary
                             if ShapeResults[zuf1-1] == 0:
                                 zuf1 = random.sample(zuf,1)[0]
@@ -418,15 +416,13 @@ class Coefficient2d:
                         
                         #shape remember
                         shapecounter += 1
-                        S = np.append(S,[zuf1,Len,thick])
-                        ############################### keine if-abfragen zum crash mehr notwendig ###############
+                        S = np.append(S,[zuf1, Len, thick])
 
                         if self.normally_distributed_val is not None:
                             assert isinstance(self.normally_distributed_val, list)
-                            a, b = self.normally_distributed_val[0], self.normally_distributed_val[1]
-                            from random import uniform
-                            np.random.seed(self.seed)
-                            val = uniform(a,b)
+                            a_val, b_val = self.normally_distributed_val[0], self.normally_distributed_val[1]
+                            np.random.seed(self.seed + i + j)
+                            val = np.random.uniform(a_val, b_val)
 
                         if zuf1 == 1:
                             A, B = self.BuildRight(A, B, i, j, val, bg, Len, thick, space)
@@ -462,9 +458,11 @@ class Coefficient2d:
         #print S
 
         if self.normally_distributed_bg is not None:
+            assert isinstance(self.normally_distributed_bg, list)
             np.random.seed(self.seed)
-            noisy_bg = np.random.rand(B.shape[0], B.shape[1]) * self.normally_distributed_bg[1]
-            noisy_bg.clip(self.normally_distributed_bg[0],self.normally_distributed_bg[1])
+            a_bg, b_bg = self.normally_distributed_bg[0], self.normally_distributed_bg[1]
+            noisy_bg = np.random.uniform(a_bg, b_bg, B.shape)
+            noisy_bg = np.clip(noisy_bg, self.normally_distributed_bg[0],self.normally_distributed_bg[1])
         else:
             noisy_bg = 0
 
@@ -474,7 +472,7 @@ class Coefficient2d:
         self.ShapeRememberOriginal = S
         self.RandomMatrix = B
 
-        Ret = np.copy(B) + noisy_bg
+        Ret = np.copy(B) + noisy_bg - bg * (noisy_bg != 0)
         for i in range(0,NWorldFine[0]):
             for j in range(0,NWorldFine[1]):
                 if Ret[i][j] == self.bg:
@@ -494,12 +492,12 @@ class Coefficient2d:
             b1 = b
             b2 = 0
         else:
-            b1 = b 
+            b1 = b
             b2 = b
             
         NWorldFine = self.NWorldFine
         result = 1
-        if j+inv*(Len) < NWorldFine[1]-b2+c and j+inv*(Len) > -1+b2 and i+inv*(thick) < NWorldFine[0]-b1 and i+inv*(thick) > -1+b1:
+        if j+inv*(Len) <= NWorldFine[1]-b2+c and j+inv*(Len) > -1+b2 and i+inv*(thick) <= NWorldFine[0]-b1 and i+inv*(thick) > -1+b1:
             for k in range(0,int(inv*(Len)),inv):
                 #rechts
                 for l in range(0,int(inv*thick),inv):
@@ -515,7 +513,7 @@ class Coefficient2d:
     def InvestigateDiagr1(self, A, i, j, Len, thick, b, c, inv = 1):
         NWorldFine = self.NWorldFine
         result = 1
-        if j+inv*Len < NWorldFine[1]-b and j+inv*Len > -1+b and i+inv*(Len+1+thick-1) < NWorldFine[0]-b and i+inv*(Len+1+thick-1) > -1+b:
+        if j+inv*Len <= NWorldFine[1]-b and j+inv*Len > -1+b and i+inv*(Len+1+thick-1) <= NWorldFine[0]-b and i+inv*(Len+1+thick-1) > -1+b:
             for k in range(0,int(inv*Len),inv):
                 #rechts diag1
                 for l in range(0,int(inv*(thick+1)),inv):
@@ -528,7 +526,7 @@ class Coefficient2d:
     def InvestigateDiagr2(self, A, i, j, Len, thick, b, c, inv = 1):
         NWorldFine = self.NWorldFine
         result = 1
-        if j+inv*(Len+thick) < NWorldFine[1]-b and j+inv*(Len+thick) > -1+b and i+inv*(Len) < NWorldFine[0]-b and i+inv*(Len) > -1+b:
+        if j+inv*(Len+thick) <= NWorldFine[1]-b and j+inv*(Len+thick) > -1+b and i+inv*(Len) <= NWorldFine[0]-b and i+inv*(Len) > -1+b:
             for k in range(0,int(inv*Len),inv):
                 #rechts diag2
                 for l in range(0,int(inv*(thick+1)),inv):
@@ -548,7 +546,7 @@ class Coefficient2d:
         
         NWorldFine = self.NWorldFine
         result = 1
-        if j+inv*(thick) < NWorldFine[1]-b1 and j+inv*(thick) > -1+b1 and i+inv*(Len)-c < NWorldFine[0]-b2 and i+inv*(Len) > -1 +b2:
+        if j+inv*(thick) <= NWorldFine[1]-b1 and j+inv*(thick) > -1+b1 and i+inv*(Len)-c <= NWorldFine[0]-b2 and i+inv*(Len) > -1 +b2:
             for k in range(0,int(inv*Len),inv):
                 #down
                 for l in range(0,int(inv*thick),inv):
@@ -563,7 +561,7 @@ class Coefficient2d:
     def InvestigateDiagl1(self, A, i, j, Len, thick, b, c, inv = 1):
         NWorldFine = self.NWorldFine
         result = 1
-        if j-inv*Len > -1+b and j-inv*Len < NWorldFine[1]-b and i+inv*(Len+thick) < NWorldFine[0]-b and i+inv*(Len+thick) >-1+b:
+        if j-inv*Len > -1+b and j-inv*Len <= NWorldFine[1]-b and i+inv*(Len+thick) <= NWorldFine[0]-b and i+inv*(Len+thick) >-1+b:
             for k in range(0,int(inv*Len),inv):
                 #links diag1
                 for l in range(0,int(inv*(thick+1)),inv):
@@ -577,7 +575,7 @@ class Coefficient2d:
     def InvestigateDiagl2(self, A, i, j, Len, thick, b, c, inv = 1):
         NWorldFine = self.NWorldFine
         result = 1
-        if j-inv*(Len) > -1+b and j-inv*(Len) < NWorldFine[1] and i+inv*(Len) < NWorldFine[0]-b and i+inv*(Len) >-1+b and j+inv*(thick+1) < NWorldFine[1]-b and j+inv*(thick+1) > -1+b:
+        if j-inv*(Len) > -1+b and j-inv*(Len) <= NWorldFine[1] and i+inv*(Len) <= NWorldFine[0]-b and i+inv*(Len) >-1+b and j+inv*(thick+1) <= NWorldFine[1]-b and j+inv*(thick+1) > -1+b:
             for k in range(0,int(inv*Len),inv):
                 #links diag2
                 for l in range(0,int(inv*(thick+1)),inv):
@@ -1338,7 +1336,7 @@ class Coefficient2d:
         Ret = np.copy(C)
 
         if self.normally_distributed_bg is not None:
-            np.random.seed(1)
+            np.random.seed(self.seed)
             noisy_bg = np.random.rand(Ret.shape[0], Ret.shape[1]) * self.normally_distributed_bg[1]
             noisy_bg.clip(self.normally_distributed_bg[0],self.normally_distributed_bg[1])
         else:
