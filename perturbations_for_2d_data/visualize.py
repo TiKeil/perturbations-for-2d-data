@@ -52,7 +52,7 @@ def d3sol(N, s, String='FinescaleSolution'):
     #fig.colorbar(surf, shrink=0.5)
 
 
-def drawCoefficient_origin(N, a, transformed = False, lim=None, logNorm=True, colorbar=True):
+def drawCoefficient_origin(N, a, transformed = False, lim=None, logNorm=True, colorbar_font_size=None):
     # This is drawCoefficient from test_pgtransport.py in gridlod
     if a.ndim == 3:
         a = np.linalg.norm(a, axis=(1, 2), ord=2)
@@ -81,13 +81,11 @@ def drawCoefficient_origin(N, a, transformed = False, lim=None, logNorm=True, co
 
     plt.xticks([])
     plt.yticks([])
-    if colorbar:
-        plt.colorbar()
-    if transformed:
+    if colorbar_font_size:
         cb = plt.colorbar()
-        font_size = 14  # Adjust as appropriate.
-        cb.ax.tick_params(labelsize=font_size)
-        cb.set_ticks([0.1,1,10])
+        cb.ax.tick_params(labelsize=colorbar_font_size)
+    plt.tight_layout()
+
 
 def drawCoefficient(N, a, greys=False, normalize=None, cmap_default = False, colorbar=False):
     '''
